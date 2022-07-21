@@ -8,27 +8,48 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest --watch",
-    "test:ci": "jest --ci"
+    "test:ci": "jest --ci",
+    "format": "prettier --write ./**/*.{js,jsx,ts,tsx,json,md,mdx}",
+    "prepare": "husky install"
   },
   "dependencies": {
     "next": "12.2.0",
+    "next-seo": "^5.4.0",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
   "devDependencies": {
+    "@next/eslint-plugin-next": "^12.2.2",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@types/node": "18.0.3",
     "@types/react": "18.0.15",
     "@types/react-dom": "18.0.6",
+    "@typescript-eslint/eslint-plugin": "^5.30.7",
+    "@typescript-eslint/parser": "^5.30.7",
     "autoprefixer": "^10.4.7",
     "eslint": "8.19.0",
+    "eslint-config-airbnb": "^19.0.4",
     "eslint-config-next": "12.2.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-import-resolver-typescript": "^3.3.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsx-a11y": "^6.6.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.30.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "husky": "^8.0.1",
     "jest": "^28.1.2",
     "jest-environment-jsdom": "^28.1.2",
+    "lint-staged": "^13.0.3",
     "postcss": "^8.4.14",
     "prettier": "^2.7.1",
+    "prettier-plugin-tailwindcss": "^0.1.12",
     "tailwindcss": "^3.1.5",
     "typescript": "4.7.4"
+  },
+  "lint-staged": {
+    "src/**/*.{js,ts,tsx}": "eslint --cache --fix",
+    "src/**/*.{js,ts,tsx,css,md}": "prettier --write"
   }
 }
