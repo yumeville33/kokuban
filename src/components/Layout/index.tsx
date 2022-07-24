@@ -1,4 +1,5 @@
 import React from "react";
+import Footer from "../Footer";
 import Navbar from "../Navbar";
 
 interface LayoutProps {
@@ -10,6 +11,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <>
       <Navbar />
       <main className="mx-auto my-0">{children}</main>
+      <Footer />
     </>
   );
 };
