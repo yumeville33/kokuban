@@ -1,10 +1,13 @@
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 import { APP_NAME, NAV_LINKS } from "@/constants";
 import { MainButton } from "../Buttons";
 
 const Navbar = () => {
+  const router = useRouter();
+
   return (
     <header className="mx-auto flex h-[100px] max-w-[2560px] items-center px-20">
       <nav className="flex w-full items-center justify-between">
@@ -18,7 +21,11 @@ const Navbar = () => {
               </a>
             </Link>
           ))}
-          <MainButton type="button" text="Sign up" />
+          <MainButton
+            type="button"
+            text="Sign up"
+            onClick={() => router.push("/auth")}
+          />
         </div>
       </nav>
     </header>
