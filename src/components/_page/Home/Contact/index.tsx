@@ -9,7 +9,7 @@ const Contact = () => {
   };
 
   return (
-    <section className="py-[100px]">
+    <section className="py-[100px] px-10">
       <h2 className="text-center text-4xl font-bold text-neutral-800">
         Have some questions?
       </h2>
@@ -65,7 +65,7 @@ const Contact = () => {
             textStyle="text-neutral-600"
           />
         </form>
-        <div className="space-y-3 text-lg text-neutral-800">
+        <div className="hidden space-y-3 text-lg text-neutral-800 md:block">
           <div>+12 345 678 90</div>
           <div>example@email.com</div>
           <div>Some address</div>

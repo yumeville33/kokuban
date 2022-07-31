@@ -7,7 +7,7 @@ import { APP_NAME } from "@/constants";
 const GetStarted = () => {
   return (
     <section className="bg-sky-600 py-[100px] text-white">
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center text-center">
         <BiBookContent className="mb-8 h-[100px] w-[100px] text-white" />
         <h2 className="mb-2 text-4xl">Ready to start making contents?</h2>
         <h3 className="mb-8 text-2xl ">Try {APP_NAME} for free</h3>

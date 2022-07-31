@@ -6,9 +6,9 @@ import { APP_NAME, FOOTER_LINKS, FOOTER_SOCIAL_LINKS } from "@/constants";
 const Footer = () => {
   return (
     <footer className="bg-sky-600 py-[100px] text-white">
-      <div className="flex justify-center space-x-40">
+      <div className="flex flex-col items-center justify-center space-y-10 space-x-0 text-center md:flex-row md:space-y-0 md:space-x-40 md:text-left">
         {FOOTER_LINKS.map(({ name, links }) => (
-          <div key={name}>
+          <div key={name} className="">
             <h4 className="text-2xl font-semibold">{name}</h4>
             <ul className="mt-3 list-none space-y-1">
               {links.map((linkName) => (

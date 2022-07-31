@@ -47,11 +47,12 @@ export const Auth = () => {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="flex h-screen items-center justify-center py-[100px]">
       <Form
         authState={authState}
         onAuthStateChange={() => {
-          setAuthState(authState === "sign_up" ? "sign_up" : "sign_in");
+          const newAuthState = authState === "sign_up" ? "sign_in" : "sign_up";
+          setAuthState(newAuthState);
         }}
         inputArray={inputArrays[authState]}
         onSubmit={(e) => onSubmit(e)}
