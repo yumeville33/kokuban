@@ -14,6 +14,11 @@ interface FormProps {
   authState: "sign_up" | "sign_in";
   description?: string;
   inputArray: Array<InputType>;
+  inputActionAndValues: Array<{
+    value: string;
+    setValue: React.Dispatch<React.SetStateAction<string>>;
+  }>;
+  error?: string | null;
   /* eslint-disable */
   // eslint-disable-next-line no-unused-vars
   onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -27,6 +32,8 @@ const Form: React.FC<FormProps> = ({
   inputArray,
   onSubmit,
   onAuthStateChange,
+  inputActionAndValues,
+  error,
 }) => {
   return (
     <form
@@ -46,16 +53,32 @@ const Form: React.FC<FormProps> = ({
       </div>
       <div className="flex flex-col space-y-5">
         {inputArray &&
-          inputArray.map((input) => (
+          inputArray.map((input, index) => (
             <input
               key={input.name}
               className="border border-neutral-300 px-3 py-3 outline-none"
               type={input.type}
               required={input.required}
               placeholder={input.placeholder}
+              value={inputActionAndValues[index].value}
+              onChange={(e) => {
+                const val = e.target.value;
+                let newVal = "";
+
+                if (input.type === "number" || input.type === "tel") {
+                  newVal = val.replace(/\D+/g, "");
+                } else {
+                  newVal = val.trim();
+                }
+
+                inputActionAndValues[index].setValue(newVal);
+              }}
             />
           ))}
-        <MainButton text="Sign up" type="submit" />
+        <MainButton
+          text={authState === "sign_in" ? "Sign in" : "Sign up"}
+          type="submit"
+        />
       </div>
       <div className="my-5 h-[1px] w-full bg-neutral-300" />
       <p className="text-center">
@@ -72,6 +95,7 @@ const Form: React.FC<FormProps> = ({
           {authState === "sign_in" ? " Register." : " Log in."}
         </span>
       </p>
+      {error && <p className="mt-3 text-center text-red-500">{error}</p>}
     </form>
   );
 };

@@ -3,10 +3,20 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { APP_NAME, NAV_LINKS } from "@/constants";
+import { useAuth, USER_DATA_STORAGE_KEY } from "@/contexts/AuthContext";
 import { MainButton } from "../Buttons";
 
 const Navbar = () => {
   const router = useRouter();
+  const { userData } = useAuth();
+
+  const handleLogout = () => {
+    window.localStorage.removeItem(USER_DATA_STORAGE_KEY);
+
+    setTimeout(() => {
+      window.location.href = window.location.origin;
+    }, 300);
+  };
 
   return (
     <header className="mx-auto flex h-[100px] max-w-[2560px] items-center px-10 md:px-20">
@@ -21,10 +31,21 @@ const Navbar = () => {
               </a>
             </Link>
           ))}
+          {userData && (
+            <button type="button" onClick={handleLogout}>
+              <p>Sign out</p>
+            </button>
+          )}
           <MainButton
             type="button"
-            text="Sign up"
-            onClick={() => router.push("/auth")}
+            text={userData ? "My content" : "Sign up"}
+            onClick={() => {
+              if (userData) {
+                router.push("/my-content");
+              } else {
+                router.push("/auth");
+              }
+            }}
           />
         </div>
       </nav>

@@ -1,9 +1,12 @@
 import React from "react";
+import { useRouter } from "next/router";
 
 import { MainButton } from "@/components/Buttons";
 import { APP_NAME } from "@/constants";
 
 const Hero = () => {
+  const router = useRouter();
+
   return (
     <section>
       <div className="flex h-[120px] flex-col items-center justify-center space-y-2 bg-sky-200 md:h-[100px]  md:flex-row md:space-y-0 md:space-x-20">
@@ -41,6 +44,9 @@ const Hero = () => {
             type="button"
             text="Try Whiteboarding"
             className="hidden lg:block"
+            onClick={() => {
+              router.push("/whiteboard");
+            }}
           />
         </div>
         <div className="flex h-[400px] w-[400px] items-center justify-center bg-sky-200 text-neutral-600">
@@ -50,6 +56,9 @@ const Hero = () => {
           type="button"
           text="Try Whiteboarding"
           className="block lg:hidden"
+          onClick={() => {
+            router.push("/whiteboard");
+          }}
         />
       </div>
     </section>

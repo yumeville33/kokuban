@@ -2,6 +2,7 @@
 import { AiFillInstagram, AiFillYoutube } from "react-icons/ai";
 import { FaLinkedinIn, FaFacebook, FaTwitter } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
+import { InputType } from "./components/_page/Auth/Form";
 
 export const APP_NAME = "Educapp" as const;
 
@@ -60,3 +61,40 @@ export const FOOTER_SOCIAL_LINKS = [
     link: "/",
   },
 ];
+
+export const INPUT_ARRAYS = {
+  sign_in: [
+    {
+      name: "Email",
+      type: "email",
+      placeholder: "Email",
+      required: true,
+    },
+    {
+      name: "Password",
+      type: "password",
+      placeholder: "Password",
+      required: true,
+    },
+  ] as InputType[],
+  sign_up: [
+    {
+      name: "Email",
+      type: "email",
+      placeholder: "Email",
+      required: true,
+    },
+    {
+      name: "Password",
+      type: "password",
+      placeholder: "Password",
+      required: true,
+    },
+    {
+      name: "Confirm Password",
+      type: "password",
+      placeholder: "Confirm Password",
+      required: true,
+    },
+  ] as InputType[],
+};
