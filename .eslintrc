@@ -36,6 +36,7 @@
     "react/function-component-definition": "off",
     "react/prop-types": "off",
     "react/require-default-props": "off",
+    "no-underscore-dangle": "off",
     "react/jsx-filename-extension": [
       2,
       {

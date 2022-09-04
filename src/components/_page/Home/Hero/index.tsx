@@ -1,11 +1,35 @@
 import React from "react";
 import { useRouter } from "next/router";
+import { toast } from "react-toastify";
 
 import { MainButton } from "@/components/Buttons";
 import { APP_NAME } from "@/constants";
+import fetchAPI from "@/utils/fetch";
 
 const Hero = () => {
   const router = useRouter();
+  const [code, setCode] = React.useState<string>("");
+
+  const handleCodeCheck = async () => {
+    try {
+      const res = await fetchAPI(
+        `${
+          process.env.NEXT_PUBLIC_API_ENDPOINT as string
+        }content/${code}/getOneContent`,
+        "GET"
+      );
+
+      console.log("res,", res);
+      if (res.status === "success") {
+        router.push(`/whiteboard/${res.data.data._id}`);
+      } else {
+        toast.error("No content found with this code!");
+      }
+    } catch (error) {
+      toast.error("No content found with this code!");
+      console.log("err", error);
+    }
+  };
 
   return (
     <section>
@@ -16,8 +40,14 @@ const Hero = () => {
             type="text"
             className="bg-white px-3 py-3 outline-none"
             placeholder="Enter code"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
           />
-          <button type="button" className="bg-sky-600 px-5 py-3 text-white">
+          <button
+            onClick={handleCodeCheck}
+            type="button"
+            className="bg-sky-600 px-5 py-3 text-white"
+          >
             Join
           </button>
         </div>

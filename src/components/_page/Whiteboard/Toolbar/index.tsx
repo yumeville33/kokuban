@@ -1,67 +1,49 @@
 import React, { useRef, useState } from "react";
 import { GoPrimitiveDot } from "react-icons/go";
+import { ChromePicker } from "react-color";
+import { MdColorLens } from "react-icons/md";
 
-import { ActiveToolType, IData, ITool } from "..";
+import { TOOLS, SHAPES, SIZES } from "@/constants";
+import { ActiveToolType, IData, ShapeType } from "@/components/types";
 
 interface ToolbarProps {
-  tools: Array<ITool>;
   activeTool: string;
   setActiveTool: React.Dispatch<React.SetStateAction<ActiveToolType>>;
-  toolOptionsActive: boolean;
-  setToolOptionsActive: React.Dispatch<React.SetStateAction<boolean>>;
-  setPreviousTool: React.Dispatch<React.SetStateAction<string | null>>;
-  previousTool: string | null;
   setColor: React.Dispatch<React.SetStateAction<string>>;
-  setSelectedOptionTool: React.Dispatch<React.SetStateAction<string>>;
-  selectedOptionTool: string;
   color: string;
-  // setPreviousColor: React.Dispatch<React.SetStateAction<string>>;
   size: number;
   setSize: React.Dispatch<React.SetStateAction<number>>;
   data: Array<IData>;
   setData: React.Dispatch<React.SetStateAction<Array<IData>>>;
-  deletedData: Array<any>;
-  setDeletedData: React.Dispatch<React.SetStateAction<Array<any>>>;
   setSelectedElement: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 const Toolbar = ({
-  tools,
   activeTool,
   setActiveTool,
-  setToolOptionsActive,
-  toolOptionsActive,
-  setPreviousTool,
-  previousTool,
-  setColor,
-  setSelectedOptionTool,
-  selectedOptionTool,
   color,
+  setColor,
   size,
   setSize,
   data,
   setData,
-  deletedData,
-  setDeletedData,
   setSelectedElement,
-}: // setPreviousColor,
-ToolbarProps) => {
-  const sizes = [3, 6, 10, 15];
-  const textColors = ["#000000", "#ff0000", "#00ff00", "#0000ff"];
+}: ToolbarProps) => {
+  const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
+  const [textColorPickerOpen, setTextColorPickerOpen] = useState(false);
+  const [isSizeToolOpen, setIsSizeToolOpen] = useState(false);
+  const [previousColor, setPreviousColor] = useState<string | null>(null);
+  const [isToolOpen, setIsToolOpen] = useState(false);
+  const [deletedData, setDeletedData] = useState<Array<any>>([]);
 
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [text, setText] = useState("");
   const [textSize, setTextSize] = useState(20);
-  const [textColor, setTextColor] = useState("#000000");
-  const [isTextToolOpen, setIsTextToolOpen] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0];
 
     if (file) {
-      console.log("file", file);
-      // const imageUrl = URL.createObjectURL(file);
-
       const reader = new FileReader();
 
       reader.onload = (event: ProgressEvent) => {
@@ -71,8 +53,6 @@ ToolbarProps) => {
         image.onload = () => {
           const percentage = (150 / image.height) * 100;
           const newWidth = image.width * (percentage / 100);
-
-          // console.log("image src", image.src);
 
           const imageData: IData = {
             id: data.length + 1,
@@ -84,13 +64,9 @@ ToolbarProps) => {
               uri: image.src,
               extensionType: file.type,
             },
-            // image: imageUrl,
           };
 
-          // console.log("imageData", imageData);
           setData([...data, imageData]);
-
-          // setImage(imageData.image);
         };
       };
 
@@ -98,10 +74,161 @@ ToolbarProps) => {
     }
   };
 
+  const handleToolClick = (toolName: ActiveToolType) => {
+    setSelectedElement(null);
+    setIsColorPickerOpen(false);
+    setTextColorPickerOpen(false);
+    setIsSizeToolOpen(false);
+
+    const filteredTools = ["image", "clear", "undo", "redo"];
+
+    if (toolName === activeTool) {
+      setIsToolOpen((prev) => !prev);
+    } else if (!filteredTools.includes(toolName)) {
+      setIsToolOpen(true);
+    }
+
+    if (toolName === "image") {
+      imageInputRef.current?.click();
+      return;
+    }
+
+    if (toolName === "undo") {
+      if (data.length > 0) {
+        const dataToDelete = data[data.length - 1];
+        setDeletedData([...deletedData, dataToDelete]);
+
+        const newData = data.slice(0, -1);
+        setData(newData);
+      } else {
+        const clearedData = deletedData[deletedData.length - 1];
+        if (Array.isArray(clearedData)) {
+          const newDeletedData = deletedData.slice(0, -1);
+          setDeletedData(newDeletedData);
+          setData(clearedData);
+        }
+      }
+    }
+
+    if (toolName === "redo") {
+      // if (data.length < 1 && deletedData.length > 0) return;
+
+      if (deletedData.length > 0) {
+        const dataToRegain = deletedData[deletedData.length - 1];
+
+        if (Array.isArray(dataToRegain)) return;
+
+        setData([...data, dataToRegain]);
+
+        const newDeletedData = deletedData.slice(0, -1);
+        setDeletedData(newDeletedData);
+      }
+    }
+
+    if (toolName === "clear") {
+      if (data.length > 0) {
+        const dataToDelete = [...data];
+        setDeletedData([...deletedData, dataToDelete]);
+
+        setData([]);
+      }
+    }
+
+    if (filteredTools.includes(toolName)) return;
+
+    // setPreviousTool(() => activeTool);
+
+    // if (options && toolName !== "eraser") {
+    //   if (
+    //     (activeTool === previousTool && !toolOptionsActive) ||
+    //     activeTool === toolName
+    //   ) {
+    //     setToolOptionsActive((prev) => !prev);
+    //   } else {
+    //     setToolOptionsActive(true);
+    //     setSelectedOptionTool(() => options[0].toolName);
+    //   }
+    // }
+
+    if (previousColor) {
+      setColor(previousColor);
+      setPreviousColor(null);
+    }
+
+    if (toolName === "eraser") {
+      setPreviousColor(() => color);
+      setColor(() => "#fff");
+    }
+
+    setActiveTool(() => toolName);
+  };
+
+  const handleShapeTool = (shapeType: ShapeType) => {
+    let newCreatedShape: IData = {} as IData;
+
+    if (shapeType === "circle") {
+      const newCircle: IData = {
+        id: data.length + 1,
+        toolType: "shapes",
+        shapeType: "circle",
+        position: { x: 100, y: 100 },
+        radius: 50,
+        color,
+      };
+      newCreatedShape = newCircle;
+    }
+
+    if (shapeType === "square") {
+      const newSquare: IData = {
+        id: data.length + 1,
+        toolType: "shapes",
+        shapeType: "square",
+        position: { x: 100, y: 100 },
+        size: { width: 100, height: 100 },
+        color,
+      };
+      newCreatedShape = newSquare;
+    }
+
+    if (shapeType === "triangle") {
+      const newTriangle: IData = {
+        id: data.length + 1,
+        toolType: "shapes",
+        shapeType: "triangle",
+        position: { x: 100, y: 100 },
+        sides: 3,
+        radius: 50,
+        color,
+      };
+      newCreatedShape = newTriangle;
+    }
+
+    setData(() => [...data, newCreatedShape]);
+  };
+
+  const handleTextTool = () => {
+    if (text.length > 0) {
+      const textData: IData = {
+        id: data.length + 1,
+        toolType: "text" as ActiveToolType,
+        size: {
+          size: textSize,
+        },
+        text,
+        position: { x: 100, y: 200 },
+        color,
+      };
+      setData([...data, textData]);
+      setText("");
+      setIsToolOpen(false);
+      setTextColorPickerOpen(false);
+    }
+  };
+
   return (
     <div className="relative z-[999] flex h-full w-[70px] flex-col items-center justify-center space-y-1 border-r-2 bg-white">
-      {tools &&
-        tools.map(({ name, Icon, options }) => (
+      {TOOLS &&
+        TOOLS.map(({ name, Icon }) => (
           <React.Fragment key={name}>
             {name === "image" && (
               <input
@@ -116,89 +243,7 @@ ToolbarProps) => {
               type="button"
               className={`${name === activeTool && "bg-sky-600"} p-2`}
               onClick={() => {
-                setSelectedElement(null);
-
-                const filteredTools = ["image", "clear", "undo", "redo"];
-
-                if (name === "text") {
-                  setIsTextToolOpen((prev) => !prev);
-                } else {
-                  setIsTextToolOpen(false);
-                }
-
-                if (name === "image") {
-                  imageInputRef.current?.click();
-                  return;
-                }
-
-                if (name === "undo") {
-                  if (data.length > 0) {
-                    const dataToDelete = data[data.length - 1];
-                    setDeletedData([...deletedData, dataToDelete]);
-
-                    const newData = data.slice(0, -1);
-                    setData(newData);
-                  } else {
-                    const clearedData = deletedData[deletedData.length - 1];
-                    if (Array.isArray(clearedData)) {
-                      const newDeletedData = deletedData.slice(0, -1);
-                      setDeletedData(newDeletedData);
-                      setData(clearedData);
-                    }
-                  }
-                }
-
-                if (name === "redo") {
-                  // if (data.length < 1 && deletedData.length > 0) return;
-
-                  if (deletedData.length > 0) {
-                    const dataToRegain = deletedData[deletedData.length - 1];
-
-                    if (Array.isArray(dataToRegain)) return;
-
-                    setData([...data, dataToRegain]);
-
-                    const newDeletedData = deletedData.slice(0, -1);
-                    setDeletedData(newDeletedData);
-                  }
-                }
-
-                if (name === "clear") {
-                  if (data.length > 0) {
-                    const dataToDelete = [...data];
-                    setDeletedData([...deletedData, dataToDelete]);
-
-                    setData([]);
-                  }
-                }
-
-                if (filteredTools.includes(name)) return;
-
-                setPreviousTool(() => activeTool);
-
-                if (options && name !== "eraser") {
-                  if (
-                    (activeTool === previousTool && !toolOptionsActive) ||
-                    activeTool === name
-                  ) {
-                    setToolOptionsActive((prev) => !prev);
-                  } else {
-                    setToolOptionsActive(true);
-                    setSelectedOptionTool(() => options[0].name);
-
-                    setColor(() =>
-                      options[0].name.includes("highlighter")
-                        ? `${options[0].color}50`
-                        : options[0].color
-                    );
-                  }
-                }
-
-                if (name === "eraser") {
-                  setColor(() => "#fff");
-                }
-
-                setActiveTool(() => name);
+                handleToolClick(name);
               }}
             >
               <Icon
@@ -207,13 +252,13 @@ ToolbarProps) => {
                 } h-[30px] w-[30px]`}
               />
             </button>
-            {activeTool === "text" && name === "text" && isTextToolOpen && (
-              <div className="absolute -right-[295px] space-y-2 rounded-lg border border-neutral-400 bg-white p-2">
+            {activeTool === "text" && name === "text" && isToolOpen && (
+              <div className="absolute left-[70px] space-y-2 rounded-lg border border-neutral-400 bg-white p-2">
                 <textarea
                   className="border border-neutral-400 p-2 outline-none"
                   name=""
                   id=""
-                  cols={30}
+                  cols={25}
                   rows={3}
                   value={text}
                   onChange={(e) => setText(e.target.value)}
@@ -227,167 +272,133 @@ ToolbarProps) => {
                     min={5}
                     max={200}
                   />
-                  <div className="flex w-full justify-evenly">
-                    {textColors.map((txtColor) => (
-                      <button type="button" key={txtColor}>
-                        <GoPrimitiveDot
-                          style={{ color: txtColor, borderColor: txtColor }}
-                          className={`${
-                            txtColor === textColor && "rounded-full border-2"
-                          } h-[30px] w-[30px]`}
-                          onClick={() => setTextColor(txtColor)}
-                        />
-                      </button>
-                    ))}
+                  <div className="flex items-center">
+                    <MdColorLens
+                      style={{ color }}
+                      className="h-[30px] w-[30px]"
+                    />
+                    <button
+                      className="h-full"
+                      type="button"
+                      onClick={() => setTextColorPickerOpen((prev) => !prev)}
+                    >
+                      <div
+                        style={{ backgroundColor: color }}
+                        className="h-full w-[50px]"
+                      />
+                    </button>
                   </div>
                 </div>
                 <button
                   className="mt-1 w-full bg-sky-600 py-2 text-white"
                   type="button"
-                  onClick={() => {
-                    if (text.length > 0) {
-                      const textData: IData = {
-                        id: data.length + 1,
-                        toolType: "text" as ActiveToolType,
-                        size: textSize,
-                        text,
-                        position: { x: 100, y: 200 },
-                        color: textColor,
-                      };
-                      setData([...data, textData]);
-                      setText("");
-                      // setTextSize(12);
-                      setIsTextToolOpen(false);
-                    }
-                  }}
+                  onClick={handleTextTool}
                 >
                   Apply
                 </button>
-              </div>
-            )}
-            {toolOptionsActive && activeTool === name && options && (
-              <div
-                className={`${
-                  name === "pen" || name === "highlighter"
-                    ? "-right-[145px]"
-                    : "-right-[75px]"
-                } absolute  flex`}
-              >
-                <div className="mr-[2px] flex h-auto w-[70px] flex-col items-center justify-center space-y-1 rounded-lg border border-neutral-400 bg-white py-2">
-                  {options.map((opt: any) => (
-                    <button
-                      style={{
-                        borderColor:
-                          selectedOptionTool === opt.name && opt.color,
+                {textColorPickerOpen && (
+                  <div className="absolute -right-[232px] -top-[8px]">
+                    <ChromePicker
+                      color={color}
+                      onChange={(clr) => {
+                        setColor(clr.hex);
                       }}
-                      key={opt.name}
-                      className={`${
-                        selectedOptionTool === opt.name && `border-2`
-                      } p-2`}
-                      type="button"
-                      onClick={() => {
-                        // setPreviousColor(() => color);
-                        setSelectedOptionTool(() => opt.name);
-
-                        // func();
-
-                        if (name === "shapes") {
-                          setToolOptionsActive(false);
-
-                          let newCreatedShape: IData = {} as IData;
-
-                          if (opt.name === "circle") {
-                            const newCircle: IData = {
-                              id: data.length + 1,
-                              toolType: "shapes",
-                              shapeType: "circle",
-                              position: { x: 100, y: 100 },
-                              radius: 50,
-                            };
-                            newCreatedShape = newCircle;
-                          }
-
-                          if (opt.name === "square") {
-                            const newSquare: IData = {
-                              id: data.length + 1,
-                              toolType: "shapes",
-                              shapeType: "square",
-                              position: { x: 100, y: 100 },
-                              size: { width: 100, height: 100 },
-                            };
-                            newCreatedShape = newSquare;
-                          }
-
-                          if (opt.name === "triangle") {
-                            const newTriangle: IData = {
-                              id: data.length + 1,
-                              toolType: "shapes",
-                              shapeType: "triangle",
-                              position: { x: 100, y: 100 },
-                              sides: 3,
-                              radius: 50,
-                            };
-                            newCreatedShape = newTriangle;
-                          }
-
-                          setData(() => [...data, newCreatedShape]);
-
-                          return;
-                        }
-
-                        // setToolOptionsActive(false);
-                        setColor(() =>
-                          opt.name.includes("highlighter")
-                            ? `${opt.color}50`
-                            : opt.color
-                        );
-                      }}
-                    >
-                      {name === "pen" || name === "highlighter" ? (
-                        <Icon
-                          style={{ color: opt.color }}
-                          className="h-[30px] w-[30px]"
-                        />
-                      ) : (
-                        <opt.Icon
-                          style={{ color: opt.color }}
-                          className="h-[30px] w-[30px]"
-                        />
-                      )}
-                    </button>
-                  ))}
-                </div>
-                {(name === "pen" || name === "highlighter") && (
-                  <div className="flex h-auto w-[70px] flex-col items-center justify-center space-y-1 rounded-lg border border-neutral-400 bg-white py-2">
-                    {sizes.map((sz, i) => {
-                      return (
-                        <button
-                          type="button"
-                          style={{
-                            borderColor: size === sz ? color : "",
-                          }}
-                          className={`p-2  ${size === sz && "border-2"}`}
-                          onClick={() => {
-                            setSize(() => sz);
-                          }}
-                        >
-                          <div className="flex h-[30px] w-[30px] items-center justify-center">
-                            <GoPrimitiveDot
-                              style={{
-                                color,
-                              }}
-                              className={`h-[${(i + 1) * 10}px] w-[${
-                                (i + 1) * 10
-                              }px] `}
-                            />
-                          </div>
-                        </button>
-                      );
-                    })}
+                      disableAlpha
+                    />
                   </div>
                 )}
               </div>
             )}
+            {(activeTool === "pen" ||
+              activeTool === "highlighter" ||
+              activeTool === "shapes") &&
+              isToolOpen && (
+                <div className={`absolute -right-[80px] h-auto `}>
+                  <div className="mr-[2px] flex h-auto w-[70px] flex-col items-center justify-center space-y-1 rounded-lg border border-neutral-400 bg-white py-2">
+                    <button
+                      type="button"
+                      className="mb-2 flex flex-col justify-center"
+                      onClick={() => {
+                        setIsSizeToolOpen(false);
+                        setIsColorPickerOpen((prev) => !prev);
+                      }}
+                    >
+                      <div className="text-xs">Color</div>
+                      <div
+                        style={{ backgroundColor: color }}
+                        className="h-[30px] w-[30px]"
+                      />
+                    </button>
+
+                    {activeTool === "shapes" &&
+                      SHAPES.map((s) => (
+                        <button
+                          type="button"
+                          key={s.name}
+                          className="p-2"
+                          onClick={() => {
+                            const shape = s.name as ShapeType;
+                            handleShapeTool(shape);
+                          }}
+                        >
+                          <s.Icon
+                            style={{ color }}
+                            className="h-[30px] w-[30px]"
+                          />
+                        </button>
+                      ))}
+                    {(activeTool === "pen" || activeTool === "highlighter") && (
+                      <button
+                        type="button"
+                        className=""
+                        onClick={() => {
+                          setIsColorPickerOpen(false);
+                          setIsSizeToolOpen((prev) => !prev);
+                        }}
+                      >
+                        <GoPrimitiveDot
+                          style={{
+                            color,
+                            fontSize:
+                              size +
+                              10 * (1 + SIZES.findIndex((sz) => sz === size)),
+                          }}
+                          className=""
+                        />
+                      </button>
+                    )}
+                  </div>
+                  {isSizeToolOpen && (
+                    <div className="absolute left-[75px] bottom-[0px] flex rounded-lg border border-neutral-400 bg-white">
+                      {SIZES.map((sz, i) => {
+                        return (
+                          <button
+                            type="button"
+                            className="px-2"
+                            key={sz}
+                            onClick={() => setSize(sz)}
+                          >
+                            <GoPrimitiveDot
+                              style={{ color, fontSize: sz + 10 * (1 + i) }}
+                            />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                  {isColorPickerOpen && (
+                    <div className="absolute -right-[232px] top-[2px]">
+                      <ChromePicker
+                        color={color}
+                        onChange={(clr) => {
+                          setColor(clr.hex);
+                        }}
+                        disableAlpha
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
           </React.Fragment>
         ))}
     </div>

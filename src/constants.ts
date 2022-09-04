@@ -1,7 +1,28 @@
 // import { BsFacebook, BsTwitter } from "react-icons/bs";
-import { AiFillInstagram, AiFillYoutube } from "react-icons/ai";
-import { FaLinkedinIn, FaFacebook, FaTwitter } from "react-icons/fa";
+import {
+  AiFillInstagram,
+  AiFillYoutube,
+  AiOutlineHighlight,
+} from "react-icons/ai";
+import { BiImageAdd } from "react-icons/bi";
+import {
+  BsCircle,
+  BsEraser,
+  BsPen,
+  BsSquare,
+  BsTriangle,
+} from "react-icons/bs";
+import {
+  FaLinkedinIn,
+  FaFacebook,
+  FaTwitter,
+  FaRegHandPointer,
+  FaShapes,
+} from "react-icons/fa";
+import { GoTextSize } from "react-icons/go";
+import { GrClear, GrRedo, GrUndo } from "react-icons/gr";
 import { MdEmail } from "react-icons/md";
+import { ITool } from "./components/types";
 import { InputType } from "./components/_page/Auth/Form";
 
 export const APP_NAME = "Educapp" as const;
@@ -98,3 +119,63 @@ export const INPUT_ARRAYS = {
     },
   ] as InputType[],
 };
+
+export const TOOLS: ITool[] = [
+  {
+    name: "drag",
+    Icon: FaRegHandPointer,
+  },
+  {
+    name: "image",
+    Icon: BiImageAdd,
+  },
+  {
+    name: "shapes",
+    Icon: FaShapes,
+  },
+  {
+    name: "text",
+    Icon: GoTextSize,
+  },
+  {
+    name: "pen",
+    Icon: BsPen,
+  },
+  {
+    name: "highlighter",
+    Icon: AiOutlineHighlight,
+  },
+  {
+    name: "eraser",
+    Icon: BsEraser,
+  },
+  {
+    name: "undo",
+    Icon: GrUndo,
+  },
+  {
+    name: "redo",
+    Icon: GrRedo,
+  },
+  {
+    name: "clear",
+    Icon: GrClear,
+  },
+];
+
+export const SHAPES = [
+  {
+    name: "circle",
+    Icon: BsCircle,
+  },
+  {
+    name: "square",
+    Icon: BsSquare,
+  },
+  {
+    name: "triangle",
+    Icon: BsTriangle,
+  },
+];
+
+export const SIZES = [3, 6, 10, 15];

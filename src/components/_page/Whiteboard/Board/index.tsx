@@ -17,7 +17,7 @@ import { useRouter } from "next/router";
 import useWindowDimensions from "@/hooks/useDimensions";
 import fetchAPI from "@/utils/fetch";
 import { useAuth } from "@/contexts/AuthContext";
-import { IData, SizeType } from "..";
+import { IData, SizeType } from "@/components/types";
 import KonvaImage from "../KonvaImage";
 
 interface BoardProps {
@@ -160,7 +160,7 @@ const Board = ({
           if (d.shapeType === "circle") {
             newObj.radius = Math.max(5, node.radius() * scaleX);
           } else if (d.toolType === "text") {
-            newObj.size = Math.max(5, node.fontSize() * scaleX);
+            newObj.size!.size = Math.max(5, node.fontSize() * scaleX);
           } else {
             newObj.size = {
               width: Math.max(5, node.width() * scaleX),
@@ -180,7 +180,7 @@ const Board = ({
 
   const onSave = async () => {
     if (!userData) return;
-    // console.log("stageRef.current?.toDataURL()", stageRef.current?.toDataURL());
+
     const uri = stageRef.current?.toDataURL();
     const imageType = uri?.split(";")[0].split("/")[1];
 
@@ -193,8 +193,6 @@ const Board = ({
       },
     };
 
-    // console.log("bodyData", bodyData);
-
     if (isPATCH) bodyData.contentId = isPATCH;
     // eslint-disable-next-line no-underscore-dangle
     const userId = userData.data.user._id;
@@ -203,13 +201,15 @@ const Board = ({
       isPATCH ? "PATCH" : "POST",
       bodyData
     );
-    console.log("res", res);
+
+    if (res.status === "success" && !isPATCH) router.push("/my-content");
   };
 
   return (
     <div
       ref={boardRef}
-      className="flex h-[calc(100%-150px)] items-center justify-center bg-white"
+      // className="flex h-[calc(100%-150px)] items-center justify-center bg-white"
+      className="flex h-full items-center justify-center bg-white"
     >
       <button
         type="button"
@@ -256,7 +256,7 @@ const Board = ({
                     key={d.id}
                     points={d.points}
                     stroke={d.color}
-                    strokeWidth={d.size as number}
+                    strokeWidth={d.size!.size as number}
                     tension={0.5}
                     lineCap="round"
                     lineJoin="round"
@@ -285,7 +285,7 @@ const Board = ({
                         x={d.position!.x}
                         y={d.position!.y}
                         radius={d.radius}
-                        stroke="black"
+                        stroke={d.color}
                         strokeWidth={4}
                         draggable={activeTool === "drag"}
                         onDragEnd={(e) => handleDragging(e, d.id)}
@@ -332,7 +332,7 @@ const Board = ({
                         y={d.position!.y}
                         width={newSize.width}
                         height={newSize.height}
-                        stroke="black"
+                        stroke={d.color}
                         strokeWidth={4}
                         draggable={activeTool === "drag"}
                         onDragEnd={(e) => handleDragging(e, d.id)}
@@ -380,7 +380,7 @@ const Board = ({
                       y={d.position!.y}
                       sides={d.sides!}
                       radius={d.radius!}
-                      stroke="black"
+                      stroke={d.color}
                       strokeWidth={4}
                       draggable={activeTool === "drag"}
                       onDragEnd={(e) => handleDragging(e, d.id)}
@@ -471,7 +471,7 @@ const Board = ({
                     x={d.position!.x}
                     y={d.position!.y}
                     text={d.text!}
-                    fontSize={d.size as number}
+                    fontSize={d.size!.size as number}
                     // width={d.size as number}
                     // height={d.size as number}
                     fontFamily="Arial"

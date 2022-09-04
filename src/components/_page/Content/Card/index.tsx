@@ -23,7 +23,7 @@ const Card: React.FC<CardProps> = ({ children, className, id, date }) => {
           {children}
         </div>
         <div className="text-lg text-neutral-700">Whiteboard</div>
-        <div className="text-neutral-500">{dateTimeToday}</div>
+        {date && <div className="text-neutral-500">{dateTimeToday}</div>}
       </a>
     </Link>
   );

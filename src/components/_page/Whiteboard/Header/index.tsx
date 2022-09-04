@@ -4,7 +4,11 @@ import { AiOutlineLeft } from "react-icons/ai";
 
 import { useAuth } from "@/contexts/AuthContext";
 
-const Header = () => {
+interface HeaderProps {
+  code?: string;
+}
+
+const Header = ({ code }: HeaderProps) => {
   const { userData } = useAuth();
   const router = useRouter();
 
@@ -15,6 +19,10 @@ const Header = () => {
           <AiOutlineLeft className="h-[30px] w-[30px]" />
         </button>
         <h1 className="text-2xl">Whiteboard</h1>
+        {code && <p className="pl-6">code: {code}</p>}
+        {code && (
+          <p className="pl-6">link: http://localhost:3000/code/{code}</p>
+        )}
       </div>
       <div className="flex items-center space-x-3">
         <button
