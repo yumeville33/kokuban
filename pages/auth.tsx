@@ -1,9 +1,9 @@
 import React from "react";
 
-//TODO - Work on this page Ella
+import { Auth as Authentication } from "@/components/_page/Auth";
 
 const Auth = () => {
-  return <div>Auth Page</div>;
+  return <Authentication />;
 };
 
 export default Auth;

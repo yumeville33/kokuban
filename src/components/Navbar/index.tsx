@@ -1,22 +1,52 @@
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 import { APP_NAME, NAV_LINKS } from "@/constants";
+import { useAuth, USER_DATA_STORAGE_KEY } from "@/contexts/AuthContext";
 import { MainButton } from "../Buttons";
 
 const Navbar = () => {
+  const router = useRouter();
+  const { userData } = useAuth();
+
+  const handleLogout = () => {
+    window.localStorage.removeItem(USER_DATA_STORAGE_KEY);
+
+    setTimeout(() => {
+      window.location.href = window.location.origin;
+    }, 300);
+  };
+
   return (
-    <header className="mx-auto flex h-[100px] max-w-[2560px] items-center px-20">
-      <nav className="flex items-center justify-between w-full">
+    <header className="mx-auto flex h-[100px] max-w-[2560px] items-center px-10 md:px-20">
+      <nav className="flex w-full items-center justify-between">
         <h1 className="text-3xl font-bold text-gray-800">{APP_NAME}</h1>
 
-        <div className="flex flex-row items-center space-x-10">
+        <div className="hidden flex-row items-center space-x-10 md:flex">
           {NAV_LINKS.map((name) => (
-            <Link key={name} href={name.toLowerCase()}>
-              <a className="text-neutral-800 hover:text-gray-900">{name}</a>
+            <Link key={name} href={name.toLowerCase()} passHref>
+              <a className="" href={name.toLowerCase()}>
+                {name}
+              </a>
             </Link>
           ))}
-          <MainButton text="Sign up" />
+          {userData && (
+            <button type="button" onClick={handleLogout}>
+              <p>Sign out</p>
+            </button>
+          )}
+          <MainButton
+            type="button"
+            text={userData ? "My content" : "Sign up"}
+            onClick={() => {
+              if (userData) {
+                router.push("/my-content");
+              } else {
+                router.push("/auth");
+              }
+            }}
+          />
         </div>
       </nav>
     </header>
