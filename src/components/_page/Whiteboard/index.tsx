@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import dynamic from "next/dynamic";
 
 import { ActiveToolType, IData, Position } from "@/components/types";
+import { useAuth } from "@/contexts/AuthContext";
 import Header from "./Header";
 // import Projects from "./Projects";
 
@@ -11,17 +12,28 @@ const DynamicToolbar = dynamic(() => import("./Toolbar"), { ssr: false });
 export interface WhiteboardProps {
   data?: Array<IData>;
   code?: string;
+  boardOwner: string;
 }
 
-export const Whiteboard = ({ data, code }: WhiteboardProps) => {
+export const Whiteboard = ({ data, code, boardOwner }: WhiteboardProps) => {
+  const { userData } = useAuth();
+
   const [activeTool, setActiveTool] = useState<ActiveToolType>("pen");
   const [color, setColor] = useState("#000000");
   const [size, setSize] = useState(3);
 
   const [selectedElement, setSelectedElement] = useState<number | null>(null);
-  const [boardData, setBoardData] = React.useState<Array<IData>>(data || []);
+  const [studentSelectedElement, setStudentSelectedElement] = useState<
+    number | null
+  >(null);
+
+  const [boardData, setBoardData] = useState<Array<IData>>(data || []);
+
+  const [studentBoardData, setStudentBoardData] = useState<Array<IData>>([]);
 
   const isDrawing = React.useRef(false);
+
+  // console.log("studentBoardData", studentBoardData);
 
   React.useEffect(() => {
     if (data) {
@@ -37,14 +49,18 @@ export const Whiteboard = ({ data, code }: WhiteboardProps) => {
 
     isDrawing.current = true;
     const pos: Position = e.target.getStage().getPointerPosition();
-    const newData = boardData.map((d, i) => {
-      return {
-        ...d,
-        id: i + 1,
-      };
-    });
+    const dataToMap = userData ? boardData : studentBoardData;
+    const newData =
+      dataToMap.length > 0
+        ? dataToMap.map((d, i) => {
+            return {
+              ...d,
+              id: i + 1,
+            };
+          })
+        : [];
 
-    setBoardData([
+    const dataToAdd = [
       ...newData,
       {
         id: newData.length + 1,
@@ -53,7 +69,11 @@ export const Whiteboard = ({ data, code }: WhiteboardProps) => {
         toolType: activeTool,
         points: [pos.x, pos.y],
       },
-    ]);
+    ];
+
+    if (userData) setBoardData(dataToAdd);
+
+    if (!userData) setStudentBoardData(dataToAdd);
   };
 
   const handleMouseMove = (e: any) => {
@@ -69,12 +89,22 @@ export const Whiteboard = ({ data, code }: WhiteboardProps) => {
 
     const stage = e.target.getStage();
     const point = stage.getPointerPosition();
-    const dataLastLine = boardData[boardData.length - 1];
+    const dataLastLine = userData
+      ? boardData[boardData.length - 1]
+      : studentBoardData[studentBoardData.length - 1];
+
     // add point
     dataLastLine.points = dataLastLine?.points?.concat([point.x, point.y]);
     // replace last
-    boardData.splice(boardData.length - 1, 1, dataLastLine);
-    setBoardData(boardData.concat());
+    if (userData) {
+      boardData.splice(boardData.length - 1, 1, dataLastLine);
+      setBoardData(boardData.concat());
+    }
+
+    if (!userData) {
+      studentBoardData.splice(studentBoardData.length - 1, 1, dataLastLine);
+      setStudentBoardData(studentBoardData.concat());
+    }
   };
 
   const handleMouseUp = () => {
@@ -95,6 +125,9 @@ export const Whiteboard = ({ data, code }: WhiteboardProps) => {
           data={boardData}
           setData={setBoardData}
           setSelectedElement={setSelectedElement}
+          studentData={studentBoardData}
+          setStudentData={setStudentBoardData}
+          setStudentSelectedElement={setStudentSelectedElement}
         />
         <div className="h-full w-full bg-neutral-300">
           <DynamicBoard
@@ -107,6 +140,11 @@ export const Whiteboard = ({ data, code }: WhiteboardProps) => {
             setData={setBoardData}
             selectedElement={selectedElement}
             setSelectedElement={setSelectedElement}
+            studentData={studentBoardData}
+            setStudentData={setStudentBoardData}
+            studentSelectedElement={studentSelectedElement}
+            setStudentSelectedElement={setStudentSelectedElement}
+            boardOwner={boardOwner}
           />
           {/* <Projects /> */}
         </div>

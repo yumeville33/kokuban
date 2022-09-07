@@ -23,7 +23,7 @@ const Navbar = () => {
       <nav className="flex w-full items-center justify-between">
         <h1 className="text-3xl font-bold text-gray-800">{APP_NAME}</h1>
 
-        <div className="hidden flex-row items-center space-x-10 md:flex">
+        <div className="hidden flex-row items-center space-x-10 lg:flex">
           {NAV_LINKS.map((name) => (
             <Link key={name} href={name.toLowerCase()} passHref>
               <a className="" href={name.toLowerCase()}>
