@@ -45,7 +45,7 @@ interface BoardProps {
   setStudentSelectedElement: React.Dispatch<
     React.SetStateAction<number | null>
   >;
-  boardOwner: string;
+  boardOwner?: string;
 }
 
 const Board = ({
