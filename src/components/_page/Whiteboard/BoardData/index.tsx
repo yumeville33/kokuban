@@ -98,10 +98,6 @@ const BoardData = ({
 
       const newData = data.map((d) => {
         if (d.id === id && d.id === selectedElement) {
-          // console.log("d.id", d.id);
-          // console.log("id", id);
-          // console.log("selectedElement", selectedElement);
-
           const newObj: IData = {
             ...d,
             position: {

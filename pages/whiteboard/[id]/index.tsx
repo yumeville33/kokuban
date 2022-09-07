@@ -21,8 +21,6 @@ const Whiteboard = () => {
           "GET"
         );
 
-        console.log("res", res);
-
         if (res) {
           setData(res?.data?.data?.content);
           setCode(res?.data?.data?.code);

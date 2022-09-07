@@ -33,8 +33,6 @@ export const Whiteboard = ({ data, code, boardOwner }: WhiteboardProps) => {
 
   const isDrawing = React.useRef(false);
 
-  // console.log("studentBoardData", studentBoardData);
-
   React.useEffect(() => {
     if (data) {
       setBoardData(data);

@@ -67,8 +67,6 @@ const Board = ({
   const { userData } = useAuth();
   const router = useRouter();
 
-  console.log("router", router);
-
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [studentName, setStudentName] = useState("");
@@ -187,7 +185,6 @@ const Board = ({
       "POST",
       bodyData
     );
-    // console.log("resssssss,", res);
     if (res.status === "success") {
       setIsModalOpen(() => false);
       toast.success("Your work has been sent to the teacher.");
