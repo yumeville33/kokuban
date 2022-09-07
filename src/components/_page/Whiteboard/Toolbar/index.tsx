@@ -41,8 +41,6 @@ const Toolbar = ({
 }: ToolbarProps) => {
   const { userData } = useAuth();
 
-  console.log("userData", userData);
-
   const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
   const [textColorPickerOpen, setTextColorPickerOpen] = useState(false);
   const [isSizeToolOpen, setIsSizeToolOpen] = useState(false);
@@ -55,12 +53,6 @@ const Toolbar = ({
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [text, setText] = useState("");
   const [textSize, setTextSize] = useState(20);
-
-  console.log("studentDeletedData", studentDeletedData);
-  console.log("studentData", studentData);
-
-  console.log("data", data);
-  console.log("deleted data", deletedData);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0];
