@@ -29,8 +29,6 @@ export const getServerSideProps = async (
     "GET"
   );
 
-  console.log("res code", res);
-
   if (res.status !== "success") {
     return {
       props: {},

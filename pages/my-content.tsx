@@ -14,7 +14,6 @@ const MyContent = () => {
 
   useEffect(() => {
     const getContents = async () => {
-      console.log("gettinnngg");
       const res = await fetchAPI(
         `${process.env.NEXT_PUBLIC_API_ENDPOINT as string}content/${
           userData?.data.user._id
@@ -23,7 +22,6 @@ const MyContent = () => {
       );
 
       if (res) {
-        console.log("res", res.data.data);
         setData(res.data.data);
       }
     };

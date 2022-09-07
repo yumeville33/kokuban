@@ -1,3 +1,4 @@
+/* eslint-disable no-lonely-if */
 import React, { useRef, useState } from "react";
 import { GoPrimitiveDot } from "react-icons/go";
 import { ChromePicker } from "react-color";
@@ -5,6 +6,7 @@ import { MdColorLens } from "react-icons/md";
 
 import { TOOLS, SHAPES, SIZES } from "@/constants";
 import { ActiveToolType, IData, ShapeType } from "@/components/types";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface ToolbarProps {
   activeTool: string;
@@ -16,6 +18,11 @@ interface ToolbarProps {
   data: Array<IData>;
   setData: React.Dispatch<React.SetStateAction<Array<IData>>>;
   setSelectedElement: React.Dispatch<React.SetStateAction<number | null>>;
+  studentData: Array<IData>;
+  setStudentData: React.Dispatch<React.SetStateAction<Array<IData>>>;
+  setStudentSelectedElement: React.Dispatch<
+    React.SetStateAction<number | null>
+  >;
 }
 
 const Toolbar = ({
@@ -28,17 +35,32 @@ const Toolbar = ({
   data,
   setData,
   setSelectedElement,
+  studentData,
+  setStudentData,
+  setStudentSelectedElement,
 }: ToolbarProps) => {
+  const { userData } = useAuth();
+
+  console.log("userData", userData);
+
   const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
   const [textColorPickerOpen, setTextColorPickerOpen] = useState(false);
   const [isSizeToolOpen, setIsSizeToolOpen] = useState(false);
   const [previousColor, setPreviousColor] = useState<string | null>(null);
   const [isToolOpen, setIsToolOpen] = useState(false);
+
   const [deletedData, setDeletedData] = useState<Array<any>>([]);
+  const [studentDeletedData, setStudentDeletedData] = useState<Array<any>>([]);
 
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [text, setText] = useState("");
   const [textSize, setTextSize] = useState(20);
+
+  console.log("studentDeletedData", studentDeletedData);
+  console.log("studentData", studentData);
+
+  console.log("data", data);
+  console.log("deleted data", deletedData);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0];
@@ -55,7 +77,7 @@ const Toolbar = ({
           const newWidth = image.width * (percentage / 100);
 
           const imageData: IData = {
-            id: data.length + 1,
+            id: userData ? data.length + 1 : studentData.length + 1,
             toolType: "image" as ActiveToolType,
             position: { x: 100, y: 100 },
             size: { width: newWidth, height: 150 },
@@ -66,7 +88,11 @@ const Toolbar = ({
             },
           };
 
-          setData([...data, imageData]);
+          if (userData) {
+            setData([...data, imageData]);
+          } else {
+            setStudentData([...studentData, imageData]);
+          }
         };
       };
 
@@ -75,7 +101,10 @@ const Toolbar = ({
   };
 
   const handleToolClick = (toolName: ActiveToolType) => {
-    setSelectedElement(null);
+    if (userData) setSelectedElement(null);
+
+    if (!userData) setStudentSelectedElement(null);
+
     setIsColorPickerOpen(false);
     setTextColorPickerOpen(false);
     setIsSizeToolOpen(false);
@@ -94,43 +123,77 @@ const Toolbar = ({
     }
 
     if (toolName === "undo") {
-      if (data.length > 0) {
-        const dataToDelete = data[data.length - 1];
-        setDeletedData([...deletedData, dataToDelete]);
+      if (userData) {
+        if (data.length > 0) {
+          const lastElement = data[data.length - 1];
+          setDeletedData([...deletedData, lastElement]);
+          setData(data.slice(0, -1));
+        } else {
+          const clearedData = deletedData[deletedData.length - 1];
+          if (Array.isArray(clearedData)) {
+            const newDeletedData = deletedData.slice(0, -1);
+            setDeletedData(newDeletedData);
+            setData(clearedData);
+          }
+        }
+      }
 
-        const newData = data.slice(0, -1);
-        setData(newData);
-      } else {
-        const clearedData = deletedData[deletedData.length - 1];
-        if (Array.isArray(clearedData)) {
-          const newDeletedData = deletedData.slice(0, -1);
-          setDeletedData(newDeletedData);
-          setData(clearedData);
+      if (!userData) {
+        if (studentData.length > 0) {
+          const lastElement = studentData[studentData.length - 1];
+          setStudentDeletedData([...studentDeletedData, lastElement]);
+          setStudentData(studentData.slice(0, -1));
+        } else {
+          const studentClearedData =
+            studentDeletedData[studentDeletedData.length - 1];
+          if (Array.isArray(studentClearedData)) {
+            const newStudentDeletedData = studentDeletedData.slice(0, -1);
+            setStudentDeletedData(newStudentDeletedData);
+            setStudentData(studentClearedData);
+          }
         }
       }
     }
 
     if (toolName === "redo") {
-      // if (data.length < 1 && deletedData.length > 0) return;
+      if (userData) {
+        if (deletedData.length > 0) {
+          const dataToRegain = deletedData[deletedData.length - 1];
+          if (Array.isArray(dataToRegain)) return;
 
-      if (deletedData.length > 0) {
-        const dataToRegain = deletedData[deletedData.length - 1];
+          setData([...data, dataToRegain]);
+          const newDeletedData = [...deletedData].slice(0, -1);
+          setDeletedData(newDeletedData);
+        }
+      }
 
-        if (Array.isArray(dataToRegain)) return;
-
-        setData([...data, dataToRegain]);
-
-        const newDeletedData = deletedData.slice(0, -1);
-        setDeletedData(newDeletedData);
+      if (!userData) {
+        if (studentDeletedData.length > 0) {
+          const dataToRegain =
+            studentDeletedData[studentDeletedData.length - 1];
+          if (Array.isArray(dataToRegain)) return;
+          setStudentData([...studentData, dataToRegain]);
+          const newDeletedData = [...studentDeletedData].slice(0, -1);
+          setStudentDeletedData(newDeletedData);
+        }
       }
     }
 
     if (toolName === "clear") {
-      if (data.length > 0) {
-        const dataToDelete = [...data];
-        setDeletedData([...deletedData, dataToDelete]);
+      if (userData) {
+        if (data.length > 0) {
+          const dataToDelete = [...data];
+          setDeletedData([...deletedData, dataToDelete]);
+          setData([]);
+        }
+      }
 
-        setData([]);
+      if (!userData) {
+        if (studentData.length > 0) {
+          const dataToDelete = [...studentData];
+          setStudentDeletedData([...studentDeletedData, dataToDelete]);
+          setStudentData([]);
+        }
       }
     }
 
@@ -168,7 +231,7 @@ const Toolbar = ({
 
     if (shapeType === "circle") {
       const newCircle: IData = {
-        id: data.length + 1,
+        id: userData ? data.length + 1 : studentData.length + 1,
         toolType: "shapes",
         shapeType: "circle",
         position: { x: 100, y: 100 },
@@ -180,7 +243,7 @@ const Toolbar = ({
 
     if (shapeType === "square") {
       const newSquare: IData = {
-        id: data.length + 1,
+        id: userData ? data.length + 1 : studentData.length + 1,
         toolType: "shapes",
         shapeType: "square",
         position: { x: 100, y: 100 },
@@ -192,7 +255,7 @@ const Toolbar = ({
 
     if (shapeType === "triangle") {
       const newTriangle: IData = {
-        id: data.length + 1,
+        id: userData ? data.length + 1 : studentData.length + 1,
         toolType: "shapes",
         shapeType: "triangle",
         position: { x: 100, y: 100 },
@@ -203,13 +266,14 @@ const Toolbar = ({
       newCreatedShape = newTriangle;
     }
 
-    setData(() => [...data, newCreatedShape]);
+    if (userData) setData(() => [...data, newCreatedShape]);
+    if (!userData) setStudentData(() => [...studentData, newCreatedShape]);
   };
 
   const handleTextTool = () => {
     if (text.length > 0) {
       const textData: IData = {
-        id: data.length + 1,
+        id: userData ? data.length + 1 : studentData.length + 1,
         toolType: "text" as ActiveToolType,
         size: {
           size: textSize,
@@ -218,7 +282,11 @@ const Toolbar = ({
         position: { x: 100, y: 200 },
         color,
       };
-      setData([...data, textData]);
+
+      if (userData) setData([...data, textData]);
+
+      if (!userData) setStudentData([...studentData, textData]);
+
       setText("");
       setIsToolOpen(false);
       setTextColorPickerOpen(false);
@@ -226,7 +294,7 @@ const Toolbar = ({
   };
 
   return (
-    <div className="relative z-[999] flex h-full w-[70px] flex-col items-center justify-center space-y-1 border-r-2 bg-white">
+    <div className="relative  flex h-full w-[70px] flex-col items-center justify-center space-y-1 border-r-2 bg-white">
       {TOOLS &&
         TOOLS.map(({ name, Icon }) => (
           <React.Fragment key={name}>

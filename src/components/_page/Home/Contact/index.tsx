@@ -18,12 +18,12 @@ const Contact = () => {
         email us at <span className="text-sky-600">example@email.com</span> and
         we will get back to you promptly regarding your request.
       </p>
-      <div className="mt-12 flex items-center justify-center space-x-12">
+      <div className="mt-12 flex flex-col space-x-12 md:flex-row md:items-center md:justify-center">
         <form action="" className="bg-sky-600 p-8" onSubmit={handleSubmit}>
           <h3 className="text-2xl font-semibold text-white">Contact Us</h3>
           <div className="mt-4 mb-6 h-[5px] w-[100px] bg-white" />
           <div className="space-y-6">
-            <div className="flex space-x-3">
+            <div className="flex flex-col space-x-0 space-y-3 md:flex-row md:space-y-0 md:space-x-3">
               <input
                 className="py-2 px-3 outline-none"
                 type="text"
@@ -36,7 +36,7 @@ const Contact = () => {
                 placeholder="Last name"
               />
             </div>
-            <div className="flex space-x-3">
+            <div className="flex flex-col space-y-3 space-x-0 md:flex-row md:space-y-0 md:space-x-3">
               <input
                 className="py-2 px-3 outline-none"
                 type="tel"
@@ -52,7 +52,7 @@ const Contact = () => {
             </div>
             <textarea
               className="w-full py-2 px-3 outline-none"
-              cols={30}
+              cols={1}
               rows={5}
               placeholder="Message"
               required
