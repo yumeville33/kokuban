@@ -12,7 +12,7 @@ const DynamicToolbar = dynamic(() => import("./Toolbar"), { ssr: false });
 export interface WhiteboardProps {
   data?: Array<IData>;
   code?: string;
-  boardOwner: string;
+  boardOwner?: string;
 }
 
 export const Whiteboard = ({ data, code, boardOwner }: WhiteboardProps) => {
