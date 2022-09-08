@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { AiOutlinePlus } from "react-icons/ai";
 
 import { useAuth } from "@/contexts/AuthContext";
 import fetchAPI from "@/utils/fetch";

@@ -50,7 +50,7 @@ const MyContent = () => {
         <div className="mt-3 flex">
           <Card
             className="flex items-center justify-center bg-neutral-300"
-            id={"/whiteboard"}
+            id="/whiteboard"
           >
             <AiOutlinePlus className="h-10 w-10 text-neutral-500" />
           </Card>
