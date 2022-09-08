@@ -1,35 +1,36 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { AiOutlinePlus } from "react-icons/ai";
 
 import { useAuth } from "@/contexts/AuthContext";
 import fetchAPI from "@/utils/fetch";
 import { APP_NAME } from "@/constants";
 import { Card } from "@/components/_page/Content";
+import { useRouter } from "next/router";
 
-const MyContent = () => {
+const Answers = () => {
   const { userData } = useAuth();
+  const router = useRouter();
   const [data, setData] = useState<any>([]);
 
   useEffect(() => {
     const getContents = async () => {
       const res = await fetchAPI(
-        `${process.env.NEXT_PUBLIC_API_ENDPOINT as string}contents/${
-          userData?.data.user._id
-        }/getUserContent`,
+        `${
+          process.env.NEXT_PUBLIC_API_ENDPOINT as string
+        }students/answer-board/${router.query.contentId}`,
         "GET"
       );
 
-      if (res) {
-        setData(res.data.data);
+      if (res.status === "success") {
+        setData(res.data.studentAnswers);
       }
     };
 
-    if (userData) {
+    if (userData && router.query.contentId) {
       getContents();
     }
-  }, [userData]);
+  }, [userData, router.query.contentId]);
 
   return (
     <div className="h-[100vh]">
@@ -46,14 +47,11 @@ const MyContent = () => {
         </nav>
       </header>
       <main className="relative mx-auto h-full max-w-[2560px] px-10 md:px-20">
-        <h2 className="text-2xl font-bold text-gray-800">Projects</h2>
+        <h2 className="text-2xl font-bold text-gray-800">Student answers</h2>
         <div className="mt-3 flex">
-          <Card
-            className="flex items-center justify-center bg-neutral-300"
-            id="/whiteboard"
-          >
+          {/* <Card className="flex items-center justify-center bg-neutral-300">
             <AiOutlinePlus className="h-10 w-10 text-neutral-500" />
-          </Card>
+          </Card> */}
           {/* {data && data.length > 0 && (
             <Image src={data[0].thumbnail.uri} layout="fill" />
           )} */}
@@ -63,10 +61,14 @@ const MyContent = () => {
               <div key={item._id} className="ml-4">
                 <Card
                   className="relative"
-                  id={`/whiteboard/${item._id}`}
+                  id={`/answers/${router?.query?.contentId}/${item._id}`}
                   date={item.updatedAt}
+                  name={item.studentName}
+                  grade={item.grade}
+                  section={item.studentSection}
+                  school={item.schoolName}
                 >
-                  <Image src={item.thumbnail.uri} layout="fill" />
+                  <Image src={item?.image?.uri} layout="fill" />
                 </Card>
               </div>
             ))}
@@ -76,4 +78,4 @@ const MyContent = () => {
   );
 };
 
-export default MyContent;
+export default Answers;

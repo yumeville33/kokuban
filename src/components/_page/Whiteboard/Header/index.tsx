@@ -1,42 +1,156 @@
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
+import Modal from "react-modal";
 import { AiOutlineLeft } from "react-icons/ai";
+import { toast } from "react-toastify";
 
 import { useAuth } from "@/contexts/AuthContext";
+import { OtherDataType } from "pages/whiteboard/[id]";
+import { MainButton } from "@/components/Buttons";
+import fetchAPI from "@/utils/fetch";
+
+Modal.setAppElement("#__next");
+
+const modalCustomStyle = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    zIndex: 999,
+  },
+};
 
 interface HeaderProps {
-  code?: string;
+  otherData?: OtherDataType;
 }
 
-const Header = ({ code }: HeaderProps) => {
+const Header = ({ otherData }: HeaderProps) => {
   const { userData } = useAuth();
   const router = useRouter();
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [grade, setGrade] = useState(0);
+
+  const onShareClick = async () => {
+    try {
+      await navigator.clipboard.writeText(
+        `${process.env.NEXT_PUBLIC_DOMAIN}/code/${otherData?.code}`
+      );
+      toast.success("Link copied to clipboard");
+    } catch (error) {
+      toast.error("Unable to copy link");
+    }
+  };
+
+  const onPutGrade = async () => {
+    try {
+      const res = await fetchAPI(
+        `${process.env.NEXT_PUBLIC_API_ENDPOINT}students/answer-student/${router?.query?.answerId}`,
+        "PATCH",
+        {
+          grade,
+        }
+      );
+
+      if (res.status === "success") {
+        toast.success("Grade updated");
+        setIsModalOpen(false);
+      }
+    } catch (error) {
+      toast.error("We are unable to put grade at the moment.");
+    }
+  };
+
   return (
     <div className="z-[999] flex h-[70px] w-full items-center justify-between bg-white px-5 shadow-md shadow-neutral-200 drop-shadow-sm">
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(() => false)}
+        contentLabel="Student info modal"
+        style={modalCustomStyle}
+      >
+        <div className="flex  flex-col space-y-5">
+          <input
+            className="w-[300px] border border-neutral-300 px-3 py-3 outline-none"
+            type="number"
+            required
+            placeholder="Grade"
+            value={grade}
+            onChange={(e) => {
+              // only numbers allowed
+              if (e.target.value.match(/^[0-9]*$/)) {
+                setGrade(parseInt(e.target.value, 10));
+              }
+            }}
+          />
+          <MainButton text="Submit Grade" type="button" onClick={onPutGrade} />
+        </div>
+      </Modal>
       <div className="flex items-center space-x-3 text-neutral-800">
-        <button type="button" onClick={() => router.push("/")}>
+        <button
+          type="button"
+          onClick={() => {
+            if (userData) {
+              if (router.asPath.includes("whiteboard")) {
+                router.push("/my-content");
+              } else if (router.asPath.includes("answers")) {
+                router.push(`/answers/${router.query.contentId}`);
+              }
+            } else {
+              router.push("/");
+            }
+          }}
+        >
           <AiOutlineLeft className="h-[30px] w-[30px]" />
         </button>
         <h1 className="text-2xl">Whiteboard</h1>
-        {code && <p className="pl-6">code: {code}</p>}
-        {code && (
-          <p className="pl-6">link: http://localhost:3000/code/{code}</p>
+        {otherData && !router.asPath.includes("answers") && (
+          <p className="pl-6">
+            Code: <span className="text-sky-600">{otherData.code}</span>
+          </p>
         )}
       </div>
+
       <div className="flex items-center space-x-3">
-        <button
-          type="button"
-          className="rounded-md bg-sky-400 px-3 py-1 text-white"
-        >
-          Share
-        </button>
-        <button
-          type="button"
-          className="h-[40px] w-[40px] rounded-full bg-neutral-300"
-        >
-          {userData ? userData.data.user.email[0].toUpperCase() : "U"}
-        </button>
+        {router.asPath.includes("answers") && (
+          <button
+            type="button"
+            className="rounded-md bg-sky-400 px-3 py-1 text-white"
+            onClick={() => setIsModalOpen(() => true)}
+          >
+            Put grade
+          </button>
+        )}
+        {userData && router?.query?.id && (
+          <>
+            <button
+              type="button"
+              className="rounded-md bg-green-400 px-3 py-1 text-white"
+              onClick={() => router.push(`/answers/${router.query.id}`)}
+            >
+              Answers
+            </button>
+            <button
+              type="button"
+              className="rounded-md bg-sky-400 px-3 py-1 text-white"
+              onClick={onShareClick}
+            >
+              Share
+            </button>
+          </>
+        )}
+
+        {userData && (
+          <button
+            type="button"
+            className="h-[40px] w-[40px] rounded-full bg-neutral-300"
+          >
+            {userData.data.user.email[0].toUpperCase()}
+          </button>
+        )}
       </div>
     </div>
   );

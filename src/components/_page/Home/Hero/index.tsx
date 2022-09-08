@@ -19,7 +19,6 @@ const Hero = () => {
         "GET"
       );
 
-      console.log("res,", res);
       if (res.status === "success") {
         router.push(`/whiteboard/${res.data.data._id}`);
       } else {
@@ -27,7 +26,6 @@ const Hero = () => {
       }
     } catch (error) {
       toast.error("No content found with this code!");
-      console.log("err", error);
     }
   };
 
