@@ -16,7 +16,7 @@ export interface OtherDataType {
   updatedAt: string | Date;
 }
 
-const Whiteboard = () => {
+const StudentAnswer = () => {
   const router = useRouter();
 
   const [data, setData] = useState<any>([]);
@@ -30,12 +30,12 @@ const Whiteboard = () => {
         const res = await fetchAPI(
           `${
             process.env.NEXT_PUBLIC_API_ENDPOINT as string
-          }contents/getOneUserContent/${router?.query?.id}`,
+          }students/answer-board-one/${router?.query?.answerId}`,
           "GET"
         );
 
         if (res.status === "success") {
-          setData(res?.data?.data?.content);
+          setData(res?.data?.studentAnswer?.content);
           const otherData = {
             ...res?.data?.data,
           };
@@ -58,4 +58,4 @@ const Whiteboard = () => {
   );
 };
 
-export default Whiteboard;
+export default StudentAnswer;

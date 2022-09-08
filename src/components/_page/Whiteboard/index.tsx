@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 
 import { ActiveToolType, IData, Position } from "@/components/types";
 import { useAuth } from "@/contexts/AuthContext";
+import { OtherDataType } from "pages/whiteboard/[id]";
 import Header from "./Header";
 // import Projects from "./Projects";
 
@@ -11,11 +12,10 @@ const DynamicToolbar = dynamic(() => import("./Toolbar"), { ssr: false });
 
 export interface WhiteboardProps {
   data?: Array<IData>;
-  code?: string;
-  boardOwner?: string;
+  otherData?: OtherDataType;
 }
 
-export const Whiteboard = ({ data, code, boardOwner }: WhiteboardProps) => {
+export const Whiteboard = ({ data, otherData }: WhiteboardProps) => {
   const { userData } = useAuth();
 
   const [activeTool, setActiveTool] = useState<ActiveToolType>("pen");
@@ -111,7 +111,7 @@ export const Whiteboard = ({ data, code, boardOwner }: WhiteboardProps) => {
 
   return (
     <div className="h-full w-full">
-      <Header code={code} />
+      <Header otherData={otherData} />
       <div className="flex h-[calc(100%-70px)] w-full">
         <DynamicToolbar
           activeTool={activeTool}
@@ -142,7 +142,7 @@ export const Whiteboard = ({ data, code, boardOwner }: WhiteboardProps) => {
             setStudentData={setStudentBoardData}
             studentSelectedElement={studentSelectedElement}
             setStudentSelectedElement={setStudentSelectedElement}
-            boardOwner={boardOwner}
+            otherData={otherData}
           />
           {/* <Projects /> */}
         </div>

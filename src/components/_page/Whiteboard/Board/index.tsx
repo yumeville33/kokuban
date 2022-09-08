@@ -11,6 +11,7 @@ import fetchAPI from "@/utils/fetch";
 import { useAuth } from "@/contexts/AuthContext";
 import { IData } from "@/components/types";
 import { MainButton } from "@/components/Buttons";
+import { OtherDataType } from "pages/whiteboard/[id]";
 import BoardData from "../BoardData";
 
 Modal.setAppElement("#__next");
@@ -45,7 +46,7 @@ interface BoardProps {
   setStudentSelectedElement: React.Dispatch<
     React.SetStateAction<number | null>
   >;
-  boardOwner?: string;
+  otherData?: OtherDataType;
 }
 
 const Board = ({
@@ -62,7 +63,7 @@ const Board = ({
   setStudentData,
   studentSelectedElement,
   setStudentSelectedElement,
-  boardOwner,
+  otherData,
 }: BoardProps) => {
   const { userData } = useAuth();
   const router = useRouter();
@@ -113,36 +114,21 @@ const Board = ({
     const imageType = uri?.split(";")[0].split("/")[1];
 
     const isPATCH = router.query.id;
-    const bodyData: any = userData
-      ? {
-          content: data,
-          thumbnail: {
-            uri,
-            extensionType: `image/${imageType}`,
-          },
-        }
-      : {
-          // TODO - Edit later
-          content: studentData,
-          image: {
-            uri,
-            extensionType: `image/${imageType}`,
-          },
-          studentName: "Zoms",
-          boardOwner,
-          boardRef: router.query.id,
-          grade: 100,
-        };
+    const bodyData: any = {
+      content: data,
+      thumbnail: {
+        uri,
+        extensionType: `image/${imageType}`,
+      },
+    };
 
     if (isPATCH) bodyData.contentId = isPATCH;
-    // eslint-disable-next-line no-underscore-dangle
-
     if (userData) {
       const userId = userData.data.user._id;
       const res = await fetchAPI(
         `${
           process.env.NEXT_PUBLIC_API_ENDPOINT as string
-        }content/${userId}/save`,
+        }contents/${userId}/save`,
         isPATCH ? "PATCH" : "POST",
         bodyData
       );
@@ -166,7 +152,7 @@ const Board = ({
 
     const bodyData = {
       // TODO - Edit later
-      content: studentData,
+      content: [...data, ...studentData],
       image: {
         uri,
         extensionType: `image/${imageType}`,
@@ -174,12 +160,12 @@ const Board = ({
       studentName,
       studentSection,
       schoolName,
-      boardOwner: "631761a475c281fa0c37be79",
+      boardOwner: otherData?.user,
       boardRef: router.query.id,
     };
 
     const res = await fetchAPI(
-      `${process.env.NEXT_PUBLIC_API_ENDPOINT as string}student/answer/${
+      `${process.env.NEXT_PUBLIC_API_ENDPOINT as string}students/answer/${
         router.query.id
       }`,
       "POST",
@@ -241,13 +227,16 @@ const Board = ({
           <MainButton text="Submit" type="button" onClick={onStudentSubmit} />
         </div>
       </Modal>
-      <button
-        type="button"
-        className="absolute  right-0 top-0 mt-[19px] mr-[150px] cursor-pointer rounded-md bg-sky-600 px-3 py-1 text-white outline-none"
-        onClick={onSave}
-      >
-        Save
-      </button>
+      {/* 150px */}
+      {!router.asPath.includes("answers") && (
+        <button
+          type="button"
+          className="absolute right-[25px] bottom-[20px] z-[140]  cursor-pointer rounded-md bg-sky-600 px-4 py-2 text-white outline-none"
+          onClick={onSave}
+        >
+          {userData ? "Save" : "Submit"}
+        </button>
+      )}
       <Stage
         ref={stageRef}
         onMouseDown={(e) => {
@@ -281,8 +270,8 @@ const Board = ({
             activeTool={activeTool}
             selectedElement={selectedElement}
             setSelectedElement={setSelectedElement}
-            isDraggable={!!userData}
-            transformable={!!userData}
+            isDraggable={!!userData && !router.asPath.includes("answers")}
+            transformable={!!userData && !router.asPath.includes("answers")}
           />
 
           {/* Students data */}
