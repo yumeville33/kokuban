@@ -1,5 +1,5 @@
 /* eslint-disable no-lonely-if */
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { GoPrimitiveDot } from "react-icons/go";
 import { ChromePicker } from "react-color";
 import { MdColorLens } from "react-icons/md";
@@ -7,6 +7,8 @@ import { MdColorLens } from "react-icons/md";
 import { TOOLS, SHAPES, SIZES } from "@/constants";
 import { ActiveToolType, IData, ShapeType } from "@/components/types";
 import { useAuth } from "@/contexts/AuthContext";
+import fetchAPI from "@/utils/fetch";
+import Image from "next/image";
 
 interface ToolbarProps {
   activeTool: string;
@@ -23,6 +25,8 @@ interface ToolbarProps {
   setStudentSelectedElement: React.Dispatch<
     React.SetStateAction<number | null>
   >;
+  templateData: Array<IData[]>;
+  setTemplateData: React.Dispatch<React.SetStateAction<Array<IData[]>>>;
 }
 
 const Toolbar = ({
@@ -38,6 +42,8 @@ const Toolbar = ({
   studentData,
   setStudentData,
   setStudentSelectedElement,
+  templateData,
+  setTemplateData,
 }: ToolbarProps) => {
   const { userData } = useAuth();
 
@@ -46,6 +52,7 @@ const Toolbar = ({
   const [isSizeToolOpen, setIsSizeToolOpen] = useState(false);
   const [previousColor, setPreviousColor] = useState<string | null>(null);
   const [isToolOpen, setIsToolOpen] = useState(false);
+  const [templates, setTemplates] = useState<Array<any>>([]);
 
   const [deletedData, setDeletedData] = useState<Array<any>>([]);
   const [studentDeletedData, setStudentDeletedData] = useState<Array<any>>([]);
@@ -54,6 +61,25 @@ const Toolbar = ({
   const [text, setText] = useState("");
   const [textSize, setTextSize] = useState(20);
 
+  useEffect(() => {
+    const getOtherUserContents = async () => {
+      const res = await fetchAPI(
+        `${
+          process.env.NEXT_PUBLIC_API_ENDPOINT as string
+        }contents/otherContents/${userData?.data.user._id}`,
+        "GET"
+      );
+
+      if (res.status === "success") {
+        setTemplates(res.data.data);
+      }
+    };
+
+    if (userData) {
+      getOtherUserContents();
+    }
+  }, [userData]);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0];
 
@@ -61,6 +87,7 @@ const Toolbar = ({
       const reader = new FileReader();
 
       reader.onload = (event: ProgressEvent) => {
+        // @ts-ignore
         const image = new Image();
         image.src = (event.target as any).result;
 
@@ -286,168 +313,120 @@ const Toolbar = ({
   };
 
   return (
-    <div className="relative  flex h-full w-[70px] flex-col items-center justify-center space-y-1 border-r-2 bg-white">
+    <div className="relative z-[50] flex h-full w-[70px] flex-col items-center justify-center space-y-1 border-r-2 bg-white">
       {TOOLS &&
-        TOOLS.map(({ name, Icon }) => (
-          <React.Fragment key={name}>
-            {name === "image" && (
-              <input
-                ref={imageInputRef}
-                type="file"
-                accept="image/png, image/jpeg"
-                className="hidden"
-                onChange={handleFileChange}
-              />
-            )}
-            <button
-              type="button"
-              className={`${name === activeTool && "bg-sky-600"} p-2`}
-              onClick={() => {
-                handleToolClick(name);
-              }}
-            >
-              <Icon
-                className={`${
-                  name === activeTool && "text-white"
-                } h-[30px] w-[30px]`}
-              />
-            </button>
-            {activeTool === "text" && name === "text" && isToolOpen && (
-              <div className="absolute left-[70px] space-y-2 rounded-lg border border-neutral-400 bg-white p-2">
-                <textarea
-                  className="border border-neutral-400 p-2 outline-none"
-                  name=""
-                  id=""
-                  cols={25}
-                  rows={3}
-                  value={text}
-                  onChange={(e) => setText(e.target.value)}
-                />
-                <div className="flex justify-between">
-                  <input
-                    className="w-[70px] border border-neutral-400 p-2 outline-none"
-                    type="number"
-                    value={textSize}
-                    onChange={(e) => setTextSize(Number(e.target.value))}
-                    min={5}
-                    max={200}
-                  />
-                  <div className="flex items-center">
-                    <MdColorLens
-                      style={{ color }}
-                      className="h-[30px] w-[30px]"
-                    />
-                    <button
-                      className="h-full"
-                      type="button"
-                      onClick={() => setTextColorPickerOpen((prev) => !prev)}
-                    >
-                      <div
-                        style={{ backgroundColor: color }}
-                        className="h-full w-[50px]"
-                      />
-                    </button>
-                  </div>
-                </div>
-                <button
-                  className="mt-1 w-full bg-sky-600 py-2 text-white"
-                  type="button"
-                  onClick={handleTextTool}
-                >
-                  Apply
-                </button>
-                {textColorPickerOpen && (
-                  <div className="absolute -right-[232px] -top-[8px]">
-                    <ChromePicker
-                      color={color}
-                      onChange={(clr) => {
-                        setColor(clr.hex);
-                      }}
-                      disableAlpha
-                    />
-                  </div>
-                )}
-              </div>
-            )}
-            {(activeTool === "pen" ||
-              activeTool === "highlighter" ||
-              activeTool === "shapes") &&
-              isToolOpen && (
-                <div className={`absolute -right-[80px] h-auto `}>
-                  <div className="mr-[2px] flex h-auto w-[70px] flex-col items-center justify-center space-y-1 rounded-lg border border-neutral-400 bg-white py-2">
-                    <button
-                      type="button"
-                      className="mb-2 flex flex-col justify-center"
-                      onClick={() => {
-                        setIsSizeToolOpen(false);
-                        setIsColorPickerOpen((prev) => !prev);
-                      }}
-                    >
-                      <div className="text-xs">Color</div>
-                      <div
-                        style={{ backgroundColor: color }}
-                        className="h-[30px] w-[30px]"
-                      />
-                    </button>
+        TOOLS.map(({ name, Icon }) => {
+          if (name === "template" && !userData) return null;
 
-                    {activeTool === "shapes" &&
-                      SHAPES.map((s) => (
-                        <button
-                          type="button"
-                          key={s.name}
-                          className="p-2"
-                          onClick={() => {
-                            const shape = s.name as ShapeType;
-                            handleShapeTool(shape);
-                          }}
-                        >
-                          <s.Icon
-                            style={{ color }}
-                            className="h-[30px] w-[30px]"
-                          />
-                        </button>
-                      ))}
-                    {(activeTool === "pen" || activeTool === "highlighter") && (
+          return (
+            <React.Fragment key={name}>
+              {name === "image" && (
+                <input
+                  ref={imageInputRef}
+                  type="file"
+                  accept="image/png, image/jpeg"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+              )}
+              <button
+                type="button"
+                className={`${name === activeTool && "bg-sky-600"} p-2`}
+                onClick={() => {
+                  handleToolClick(name);
+                }}
+              >
+                <Icon
+                  className={`${
+                    name === activeTool && "text-white"
+                  } h-[30px] w-[30px]`}
+                />
+              </button>
+              {activeTool === "template" && name === "template" && isToolOpen && (
+                <div className="absolute left-[70px]  rounded-lg border border-neutral-400 bg-white p-2">
+                  <div className="mb-2 text-center text-sm">Templates</div>
+                  <div className="space-y-2">
+                    {templates.map((template) => (
                       <button
+                        key={template._id}
+                        className="relative h-[80px] w-[130px] border border-neutral-300"
                         type="button"
-                        className=""
                         onClick={() => {
-                          setIsColorPickerOpen(false);
-                          setIsSizeToolOpen((prev) => !prev);
+                          // set
+                          setTemplateData([...templateData, template.content]);
                         }}
                       >
-                        <GoPrimitiveDot
-                          style={{
-                            color,
-                            fontSize:
-                              size +
-                              10 * (1 + SIZES.findIndex((sz) => sz === size)),
-                          }}
-                          className=""
+                        <Image
+                          layout="fill"
+                          objectPosition="center"
+                          objectFit="contain"
+                          src={template.thumbnail.uri}
                         />
                       </button>
-                    )}
-                  </div>
-                  {isSizeToolOpen && (
-                    <div className="absolute left-[75px] bottom-[0px] flex rounded-lg border border-neutral-400 bg-white">
-                      {SIZES.map((sz, i) => {
-                        return (
-                          <button
-                            type="button"
-                            className="px-2"
-                            key={sz}
-                            onClick={() => setSize(sz)}
-                          >
-                            <GoPrimitiveDot
-                              style={{ color, fontSize: sz + 10 * (1 + i) }}
-                            />
-                          </button>
-                        );
-                      })}
+                    ))}
+                    <div className="flex w-full justify-evenly ">
+                      <button
+                        type="button"
+                        className="border border-neutral-300 py-[2px] px-2"
+                      >
+                        {"<"}
+                      </button>
+                      <button
+                        type="button"
+                        className="border border-neutral-300 py-[2px] px-2"
+                      >
+                        {">"}
+                      </button>
                     </div>
-                  )}
-                  {isColorPickerOpen && (
-                    <div className="absolute -right-[232px] top-[2px]">
+                  </div>
+                </div>
+              )}
+              {activeTool === "text" && name === "text" && isToolOpen && (
+                <div className="absolute left-[70px] space-y-2 rounded-lg border border-neutral-400 bg-white p-2">
+                  <textarea
+                    className="border border-neutral-400 p-2 outline-none"
+                    name=""
+                    id=""
+                    cols={25}
+                    rows={3}
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                  />
+                  <div className="flex justify-between">
+                    <input
+                      className="w-[70px] border border-neutral-400 p-2 outline-none"
+                      type="number"
+                      value={textSize}
+                      onChange={(e) => setTextSize(Number(e.target.value))}
+                      min={5}
+                      max={200}
+                    />
+                    <div className="flex items-center">
+                      <MdColorLens
+                        style={{ color }}
+                        className="h-[30px] w-[30px]"
+                      />
+                      <button
+                        className="h-full"
+                        type="button"
+                        onClick={() => setTextColorPickerOpen((prev) => !prev)}
+                      >
+                        <div
+                          style={{ backgroundColor: color }}
+                          className="h-full w-[50px]"
+                        />
+                      </button>
+                    </div>
+                  </div>
+                  <button
+                    className="mt-1 w-full bg-sky-600 py-2 text-white"
+                    type="button"
+                    onClick={handleTextTool}
+                  >
+                    Apply
+                  </button>
+                  {textColorPickerOpen && (
+                    <div className="absolute -right-[232px] -top-[8px]">
                       <ChromePicker
                         color={color}
                         onChange={(clr) => {
@@ -459,8 +438,100 @@ const Toolbar = ({
                   )}
                 </div>
               )}
-          </React.Fragment>
-        ))}
+              {(activeTool === "pen" ||
+                activeTool === "highlighter" ||
+                activeTool === "shapes") &&
+                isToolOpen && (
+                  <div className={`absolute -right-[80px] h-auto `}>
+                    <div className="mr-[2px] flex h-auto w-[70px] flex-col items-center justify-center space-y-1 rounded-lg border border-neutral-400 bg-white py-2">
+                      <button
+                        type="button"
+                        className="mb-2 flex flex-col justify-center"
+                        onClick={() => {
+                          setIsSizeToolOpen(false);
+                          setIsColorPickerOpen((prev) => !prev);
+                        }}
+                      >
+                        <div className="text-xs">Color</div>
+                        <div
+                          style={{ backgroundColor: color }}
+                          className="h-[30px] w-[30px]"
+                        />
+                      </button>
+
+                      {activeTool === "shapes" &&
+                        SHAPES.map((s) => (
+                          <button
+                            type="button"
+                            key={s.name}
+                            className="p-2"
+                            onClick={() => {
+                              const shape = s.name as ShapeType;
+                              handleShapeTool(shape);
+                            }}
+                          >
+                            <s.Icon
+                              style={{ color }}
+                              className="h-[30px] w-[30px]"
+                            />
+                          </button>
+                        ))}
+                      {(activeTool === "pen" ||
+                        activeTool === "highlighter") && (
+                        <button
+                          type="button"
+                          className=""
+                          onClick={() => {
+                            setIsColorPickerOpen(false);
+                            setIsSizeToolOpen((prev) => !prev);
+                          }}
+                        >
+                          <GoPrimitiveDot
+                            style={{
+                              color,
+                              fontSize:
+                                size +
+                                10 * (1 + SIZES.findIndex((sz) => sz === size)),
+                            }}
+                            className=""
+                          />
+                        </button>
+                      )}
+                    </div>
+                    {isSizeToolOpen && (
+                      <div className="absolute left-[75px] bottom-[0px] flex rounded-lg border border-neutral-400 bg-white">
+                        {SIZES.map((sz, i) => {
+                          return (
+                            <button
+                              type="button"
+                              className="px-2"
+                              key={sz}
+                              onClick={() => setSize(sz)}
+                            >
+                              <GoPrimitiveDot
+                                style={{ color, fontSize: sz + 10 * (1 + i) }}
+                              />
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                    {isColorPickerOpen && (
+                      <div className="absolute -right-[232px] top-[2px]">
+                        <ChromePicker
+                          color={color}
+                          onChange={(clr) => {
+                            setColor(clr.hex);
+                          }}
+                          disableAlpha
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+            </React.Fragment>
+          );
+        })}
     </div>
   );
 };

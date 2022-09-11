@@ -65,6 +65,7 @@ const MyContent = () => {
                   className="relative"
                   id={`/whiteboard/${item._id}`}
                   date={item.updatedAt}
+                  name={item.title}
                 >
                   <Image src={item.thumbnail.uri} layout="fill" />
                 </Card>

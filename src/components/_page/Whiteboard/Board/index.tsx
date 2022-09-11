@@ -47,6 +47,8 @@ interface BoardProps {
     React.SetStateAction<number | null>
   >;
   otherData?: OtherDataType;
+  whiteboardTitle: string;
+  templateData?: Array<IData[]>;
 }
 
 const Board = ({
@@ -64,6 +66,8 @@ const Board = ({
   studentSelectedElement,
   setStudentSelectedElement,
   otherData,
+  whiteboardTitle,
+  templateData,
 }: BoardProps) => {
   const { userData } = useAuth();
   const router = useRouter();
@@ -110,6 +114,16 @@ const Board = ({
       return;
     }
 
+    if (userData && data.length < 1 && studentData.length < 1) {
+      toast.error("Please draw something before saving.");
+      return;
+    }
+
+    if (!userData && data.length < 1 && studentData.length > 0) {
+      toast.error("Please sign in to save your work.");
+      return;
+    }
+
     const uri = stageRef.current?.toDataURL();
     const imageType = uri?.split(";")[0].split("/")[1];
 
@@ -120,6 +134,7 @@ const Board = ({
         uri,
         extensionType: `image/${imageType}`,
       },
+      title: whiteboardTitle || "Untitled",
     };
 
     if (isPATCH) bodyData.contentId = isPATCH;
@@ -134,6 +149,10 @@ const Board = ({
       );
 
       if (res.status === "success" && !isPATCH) router.push("/my-content");
+    }
+
+    if (userData && isPATCH) {
+      toast.success("Your work has been saved.");
     }
 
     if (!userData) {
@@ -234,7 +253,7 @@ const Board = ({
           className="absolute right-[25px] bottom-[20px] z-[140]  cursor-pointer rounded-md bg-sky-600 px-4 py-2 text-white outline-none"
           onClick={onSave}
         >
-          {userData ? "Save" : "Submit"}
+          {!userData && router.query.id ? "Submit" : "Save"}
         </button>
       )}
       <Stage
@@ -263,6 +282,22 @@ const Board = ({
         height={boardSize.height}
       >
         <Layer>
+          {/* template data */}
+          {templateData &&
+            templateData.length > 0 &&
+            templateData.map((template, i) => (
+              <BoardData
+                key={i}
+                data={template}
+                setData={() => {}}
+                activeTool=""
+                selectedElement={null}
+                setSelectedElement={() => {}}
+                isDraggable={false}
+                transformable={false}
+              />
+            ))}
+
           {/* Teachers data */}
           <BoardData
             data={data}
