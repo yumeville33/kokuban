@@ -24,10 +24,16 @@ const modalCustomStyle = {
 };
 
 interface HeaderProps {
+  whiteboardTitle: string;
+  setWhiteboardTitle: React.Dispatch<React.SetStateAction<string | undefined>>;
   otherData?: OtherDataType;
 }
 
-const Header = ({ otherData }: HeaderProps) => {
+const Header = ({
+  otherData,
+  whiteboardTitle,
+  setWhiteboardTitle,
+}: HeaderProps) => {
   const { userData } = useAuth();
   const router = useRouter();
 
@@ -106,7 +112,16 @@ const Header = ({ otherData }: HeaderProps) => {
         >
           <AiOutlineLeft className="h-[30px] w-[30px]" />
         </button>
-        <h1 className="text-2xl">Whiteboard</h1>
+        {/* <h1 className="text-2xl">Whiteboard</h1> */}
+        <input
+          type="text"
+          className="rounded-lg border border-neutral-200 px-3 py-2 text-xl outline-none"
+          placeholder="Whiteboard name"
+          value={whiteboardTitle}
+          onChange={(e) => {
+            if (userData) setWhiteboardTitle(e.target.value);
+          }}
+        />
         {otherData && !router.asPath.includes("answers") && (
           <p className="pl-6">
             Code: <span className="text-sky-600">{otherData.code}</span>

@@ -22,6 +22,8 @@ import {
 import { GoTextSize } from "react-icons/go";
 import { GrClear, GrRedo, GrUndo } from "react-icons/gr";
 import { MdEmail } from "react-icons/md";
+import { HiTemplate } from "react-icons/hi";
+
 import { ITool } from "./components/types";
 import { InputType } from "./components/_page/Auth/Form";
 
@@ -124,6 +126,10 @@ export const TOOLS: ITool[] = [
   {
     name: "drag",
     Icon: FaRegHandPointer,
+  },
+  {
+    name: "template",
+    Icon: HiTemplate,
   },
   {
     name: "image",

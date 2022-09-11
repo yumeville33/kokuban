@@ -21,6 +21,7 @@ export const Whiteboard = ({ data, otherData }: WhiteboardProps) => {
   const [activeTool, setActiveTool] = useState<ActiveToolType>("pen");
   const [color, setColor] = useState("#000000");
   const [size, setSize] = useState(3);
+  const [whiteboardTitle, setWhiteboardTitle] = useState<string | undefined>();
 
   const [selectedElement, setSelectedElement] = useState<number | null>(null);
   const [studentSelectedElement, setStudentSelectedElement] = useState<
@@ -30,6 +31,10 @@ export const Whiteboard = ({ data, otherData }: WhiteboardProps) => {
   const [boardData, setBoardData] = useState<Array<IData>>(data || []);
 
   const [studentBoardData, setStudentBoardData] = useState<Array<IData>>([]);
+
+  const [templateData, setTemplateData] = useState<Array<IData[]>>([]);
+
+  console.log("tempalte data", templateData);
 
   const isDrawing = React.useRef(false);
 
@@ -111,7 +116,11 @@ export const Whiteboard = ({ data, otherData }: WhiteboardProps) => {
 
   return (
     <div className="h-full w-full">
-      <Header otherData={otherData} />
+      <Header
+        otherData={otherData}
+        whiteboardTitle={whiteboardTitle || otherData?.title || ""}
+        setWhiteboardTitle={setWhiteboardTitle}
+      />
       <div className="flex h-[calc(100%-70px)] w-full">
         <DynamicToolbar
           activeTool={activeTool}
@@ -126,6 +135,8 @@ export const Whiteboard = ({ data, otherData }: WhiteboardProps) => {
           studentData={studentBoardData}
           setStudentData={setStudentBoardData}
           setStudentSelectedElement={setStudentSelectedElement}
+          templateData={templateData}
+          setTemplateData={setTemplateData}
         />
         <div className="h-full w-full bg-neutral-300">
           <DynamicBoard
@@ -143,6 +154,8 @@ export const Whiteboard = ({ data, otherData }: WhiteboardProps) => {
             studentSelectedElement={studentSelectedElement}
             setStudentSelectedElement={setStudentSelectedElement}
             otherData={otherData}
+            whiteboardTitle={whiteboardTitle || otherData?.title || ""}
+            templateData={templateData}
           />
           {/* <Projects /> */}
         </div>
