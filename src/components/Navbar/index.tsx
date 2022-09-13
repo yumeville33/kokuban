@@ -21,7 +21,11 @@ const Navbar = () => {
   return (
     <header className="mx-auto flex h-[100px] max-w-[2560px] items-center px-10 md:px-20">
       <nav className="flex w-full items-center justify-between">
-        <h1 className="text-3xl font-bold text-gray-800">{APP_NAME}</h1>
+        <Link href="/">
+          <h1 className="cursor-pointer text-3xl font-bold text-gray-800">
+            {APP_NAME}
+          </h1>
+        </Link>
 
         <div className="hidden flex-row items-center space-x-10 lg:flex">
           {NAV_LINKS.map((name) => (

@@ -31,8 +31,8 @@ export const APP_NAME = "Educapp" as const;
 
 export const NAV_LINKS = [
   "Features",
-  "Pricing",
-  "Resources",
+  // "Pricing",
+  // "Resources",
   "About",
   "Contact",
 ];
