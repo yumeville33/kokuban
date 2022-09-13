@@ -41,7 +41,9 @@ const MyContent = () => {
         if (res.status === "success") {
           setData(res.data.data);
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     if (userData) {
