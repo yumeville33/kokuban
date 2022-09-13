@@ -60,10 +60,10 @@ const StudentAnswer = () => {
             delete otherData.content;
 
             setOtherData(otherData as OtherDataType);
-          } else {
-            // router.push("/whiteboard");
           }
-        } catch (error) {}
+        } catch (error) {
+          console.log(error);
+        }
       }
     };
 

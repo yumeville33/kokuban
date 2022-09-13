@@ -38,7 +38,9 @@ const Table = () => {
         if (res.status === "success") {
           setStudentGrades(res.data.studentAnswers);
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      }
 
       setLoading(false);
     };

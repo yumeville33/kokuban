@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 
 import { useAuth } from "@/contexts/AuthContext";
 import fetchAPI from "@/utils/fetch";
-import { APP_NAME } from "@/constants";
 import Card from "@/components/_page/Content/Card";
 import { Layout, Spinner } from "@/components";
 import { toast } from "react-toastify";
@@ -43,7 +42,9 @@ const Answers = () => {
         if (res.status === "success") {
           setData(res.data.studentAnswers);
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      }
 
       setLoading(false);
     };
