@@ -8,7 +8,7 @@ import { TOOLS, SHAPES, SIZES } from "@/constants";
 import { ActiveToolType, IData, ShapeType } from "@/components/types";
 import { useAuth } from "@/contexts/AuthContext";
 import fetchAPI from "@/utils/fetch";
-import Image from "next/image";
+import NextImage from "next/image";
 
 interface ToolbarProps {
   activeTool: string;
@@ -81,13 +81,13 @@ const Toolbar = ({
   }, [userData]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("handleFileChange");
     const file = e.target.files && e.target.files[0];
 
     if (file) {
       const reader = new FileReader();
 
       reader.onload = (event: ProgressEvent) => {
-        // @ts-ignore
         const image = new Image();
         image.src = (event.target as any).result;
 
@@ -326,7 +326,7 @@ const Toolbar = ({
                   type="file"
                   accept="image/png, image/jpeg"
                   className="hidden"
-                  onChange={handleFileChange}
+                  onChange={(e) => handleFileChange(e)}
                 />
               )}
               <button
@@ -356,7 +356,7 @@ const Toolbar = ({
                           setTemplateData([...templateData, template.content]);
                         }}
                       >
-                        <Image
+                        <NextImage
                           layout="fill"
                           objectPosition="center"
                           objectFit="contain"
