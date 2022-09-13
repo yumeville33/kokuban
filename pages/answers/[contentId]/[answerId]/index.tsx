@@ -72,13 +72,13 @@ const StudentAnswer = () => {
   }, [router.query]);
 
   return (
-    <>
+    <div>
       {userData && (
         <section className="h-screen w-screen">
           <WhiteboardComponent otherData={otherData} data={data} />
         </section>
       )}
-    </>
+    </div>
   );
 };
 

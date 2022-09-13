@@ -79,7 +79,7 @@ const Answers = () => {
   };
 
   return (
-    <>
+    <div>
       {userData && (
         <Layout>
           <main className="relative mx-auto min-h-[calc(100vh-100px)] max-w-[2560px] px-10 md:px-20">
@@ -132,7 +132,7 @@ const Answers = () => {
           </main>
         </Layout>
       )}
-    </>
+    </div>
   );
 };
 

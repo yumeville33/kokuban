@@ -53,7 +53,7 @@ const Table = () => {
   }, [userData, router.query.contentId]);
 
   return (
-    <>
+    <div>
       {userData && (
         <Layout>
           <div className="container mx-auto min-h-[calc(100vh-100px)] px-4 sm:px-6">
@@ -158,7 +158,7 @@ const Table = () => {
           </div>
         </Layout>
       )}
-    </>
+    </div>
   );
 };
 
