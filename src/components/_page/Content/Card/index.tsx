@@ -10,6 +10,9 @@ interface CardProps {
   grade?: number;
   section?: string;
   school?: string;
+  onOptionClick?: () => void;
+  onDelete?: () => void;
+  isOptionOpen?: boolean;
 }
 
 const Card: React.FC<CardProps> = ({
@@ -21,6 +24,9 @@ const Card: React.FC<CardProps> = ({
   grade,
   section,
   school,
+  onOptionClick,
+  onDelete,
+  isOptionOpen,
 }) => {
   const dateToday = date ? new Date(date) : new Date();
   const newDate = dateToday.toLocaleDateString();
@@ -28,32 +34,66 @@ const Card: React.FC<CardProps> = ({
   const dateTimeToday = `${newDate} ${time}`;
 
   return (
-    <Link href={`${id || ""}`} passHref>
-      <a href={`${id || ""}`}>
+    <div>
+      <Link href={`${id || ""}`} passHref>
         <div
-          className={`h-[150px] w-[230px] rounded-md ${className} border border-neutral-300`}
+          className={`h-[150px] w-[230px] cursor-pointer rounded-md ${className} border border-neutral-300`}
         >
           {children}
         </div>
-        <div className="text-lg text-neutral-700">{name || "Whiteboard"}</div>
-        {section && (
-          <div className="text-lg text-neutral-700">
-            {section || "No section"}
+      </Link>
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="text-lg text-neutral-700">{name || "Whiteboard"}</div>
+          {section && (
+            <div className="text-lg text-neutral-700">
+              {section || "No section"}
+            </div>
+          )}
+          {school && (
+            <div className="text-lg text-neutral-700">
+              {school || "No School"}
+            </div>
+          )}
+          {date && <div className="text-neutral-500">{dateTimeToday}</div>}
+          {grade !== undefined && (
+            <div className="text-neutral-500">
+              Grade: {grade === 0 ? "No grade yet" : grade}
+            </div>
+          )}
+        </div>
+        {date && (
+          <div className="relative">
+            <button
+              type="button"
+              className="inline-block text-gray-500 hover:text-gray-700"
+              onClick={onOptionClick}
+            >
+              <svg
+                className="inline-block h-6 w-6 fill-current"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12 6a2 2 0 110-4 2 2 0 010 4zm0 8a2 2 0 110-4 2 2 0 010 4zm-2 6a2 2 0 104 0 2 2 0 00-4 0z" />
+              </svg>
+            </button>
+            {/* delete button */}
+            {isOptionOpen && (
+              <div className="absolute right-0 top-[20px] mt-2 mr-2">
+                <div className="rounded-md border border-neutral-300 bg-red-500 shadow-lg hover:bg-red-700">
+                  <button
+                    type="button"
+                    className="block px-4 py-2 text-sm text-white "
+                    onClick={onDelete}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
-        {school && (
-          <div className="text-lg text-neutral-700">
-            {school || "No School"}
-          </div>
-        )}
-        {date && <div className="text-neutral-500">{dateTimeToday}</div>}
-        {grade !== undefined && (
-          <div className="text-neutral-500">
-            Grade: {grade === 0 ? "No grade yet" : grade}
-          </div>
-        )}
-      </a>
-    </Link>
+      </div>
+    </div>
   );
 };
 
