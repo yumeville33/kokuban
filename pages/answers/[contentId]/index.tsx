@@ -41,11 +41,15 @@ const Answers = () => {
       <header className="mx-auto flex h-[100px] max-w-[2560px] items-center px-10 md:px-20">
         <nav className="flex w-full items-center justify-between">
           <Link href="/">
-            <h1 className="text-3xl font-bold text-gray-800">{APP_NAME}</h1>
+            <h1 className="cursor-pointer text-3xl font-bold text-gray-800">
+              {APP_NAME}
+            </h1>
           </Link>
           <div className="flex items-center space-x-4">
             <Link href={`${router.asPath}/table`}>
-              <a className="text-sky-600">View grades in table format</a>
+              <p className="cursor-pointer text-sky-600">
+                View grades in table format
+              </p>
             </Link>
             {/* <div className="text-xl font-bold text-gray-800">
               {userData?.data.user.email.split("@")[0]}
