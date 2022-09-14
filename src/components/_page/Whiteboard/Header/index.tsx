@@ -102,8 +102,8 @@ const Header = ({
             if (userData) {
               if (router.asPath.includes("whiteboard")) {
                 router.push("/my-content");
-              } else if (router.asPath.includes("answers")) {
-                router.push(`/answers/${router.query.contentId}`);
+              } else if (router.asPath.includes("answer")) {
+                router.push(`/answer`);
               }
             } else {
               router.push("/");
@@ -122,7 +122,7 @@ const Header = ({
             if (userData) setWhiteboardTitle(e.target.value);
           }}
         />
-        {otherData && !router.asPath.includes("answers") && (
+        {otherData && !router.asPath.includes("answer") && (
           <p className="pl-6">
             Code: <span className="text-sky-600">{otherData.code}</span>
           </p>
@@ -130,7 +130,7 @@ const Header = ({
       </div>
 
       <div className="flex items-center space-x-3">
-        {router.asPath.includes("answers") && (
+        {router.asPath.includes("answer") && (
           <button
             type="button"
             className="rounded-md bg-sky-400 px-3 py-1 text-white"
@@ -140,22 +140,13 @@ const Header = ({
           </button>
         )}
         {userData && router?.query?.id && (
-          <>
-            <button
-              type="button"
-              className="rounded-md bg-green-400 px-3 py-1 text-white"
-              onClick={() => router.push(`/answers/${router.query.id}`)}
-            >
-              Answers
-            </button>
-            <button
-              type="button"
-              className="rounded-md bg-sky-400 px-3 py-1 text-white"
-              onClick={onShareClick}
-            >
-              Share
-            </button>
-          </>
+          <button
+            type="button"
+            className="rounded-md bg-sky-400 px-3 py-1 text-white"
+            onClick={onShareClick}
+          >
+            Share
+          </button>
         )}
 
         {userData && (

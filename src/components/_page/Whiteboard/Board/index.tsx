@@ -247,7 +247,7 @@ const Board = ({
         </div>
       </Modal>
       {/* 150px */}
-      {!router.asPath.includes("answers") && (
+      {!router.asPath.includes("answer") && (
         <button
           type="button"
           className="absolute right-[25px] bottom-[20px] z-[140]  cursor-pointer rounded-md bg-sky-600 px-4 py-2 text-white outline-none"
@@ -305,8 +305,8 @@ const Board = ({
             activeTool={activeTool}
             selectedElement={selectedElement}
             setSelectedElement={setSelectedElement}
-            isDraggable={!!userData && !router.asPath.includes("answers")}
-            transformable={!!userData && !router.asPath.includes("answers")}
+            isDraggable={!!userData && !router.asPath.includes("answer")}
+            transformable={!!userData && !router.asPath.includes("answer")}
           />
 
           {/* Students data */}
