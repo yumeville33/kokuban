@@ -15,7 +15,7 @@ const Hero = () => {
       const res = await fetchAPI(
         `${
           process.env.NEXT_PUBLIC_API_ENDPOINT as string
-        }content/${code}/getOneContent`,
+        }contents/${code}/getOneContent`,
         "GET"
       );
 

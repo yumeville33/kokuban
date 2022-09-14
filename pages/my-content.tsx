@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import fetchAPI from "@/utils/fetch";
 import { Card } from "@/components/_page/Content";
 import { Layout } from "@/components";
+import Link from "next/link";
 
 const MyContent = () => {
   const router = useRouter();
@@ -65,7 +66,7 @@ const MyContent = () => {
       if (res.status === "success") {
         setData(data.filter((item: any) => item._id !== selectedContent));
         setSelectedContent(null);
-        toast.success("Content deleted successfully");
+        toast.success("Material deleted successfully");
       } else {
         toast.error("Something went wrong! Cannot delete content.");
       }
@@ -80,7 +81,16 @@ const MyContent = () => {
       {userData && (
         <Layout>
           <main className="relative mx-auto min-h-[calc(100vh-100px)] max-w-[2560px] px-10 md:px-20">
-            <h2 className="mb-5 text-2xl font-bold text-gray-800">Projects</h2>
+            <div className="flex items-center space-x-5">
+              <h2 className="mb-5 text-2xl font-bold text-gray-800">
+                Projects
+              </h2>
+              <Link href="/answer">
+                <p className="mb-[15px] cursor-pointer text-sky-600">
+                  View submitted materials by students
+                </p>
+              </Link>
+            </div>
             <div className="mt-3 flex">
               <Card
                 className="flex items-center justify-center bg-neutral-300"
