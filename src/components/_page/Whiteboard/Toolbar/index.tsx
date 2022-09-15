@@ -9,6 +9,7 @@ import { ActiveToolType, IData, ShapeType } from "@/components/types";
 import { useAuth } from "@/contexts/AuthContext";
 import fetchAPI from "@/utils/fetch";
 import NextImage from "next/image";
+import imageUpload from "@/utils/imageUpload";
 
 interface ToolbarProps {
   activeTool: string;
@@ -80,14 +81,14 @@ const Toolbar = ({
     }
   }, [userData]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("handleFileChange");
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0];
 
     if (file) {
+      const imageUrl = await imageUpload(file);
       const reader = new FileReader();
 
-      reader.onload = (event: ProgressEvent) => {
+      reader.onload = async (event: ProgressEvent) => {
         const image = new Image();
         image.src = (event.target as any).result;
 
@@ -101,10 +102,11 @@ const Toolbar = ({
             position: { x: 100, y: 100 },
             size: { width: newWidth, height: 150 },
             originalSize: { width: image.width, height: image.height },
-            image: {
-              uri: image.src,
-              extensionType: file.type,
-            },
+            // image: {
+            //   uri: image.src,
+            //   extensionType: file.type,
+            // },
+            image: imageUrl,
           };
 
           if (userData) {
@@ -360,7 +362,7 @@ const Toolbar = ({
                           layout="fill"
                           objectPosition="center"
                           objectFit="contain"
-                          src={template.thumbnail.uri}
+                          src={template.thumbnail.url}
                         />
                       </button>
                     ))}

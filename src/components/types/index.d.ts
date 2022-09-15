@@ -1,5 +1,10 @@
 import { IconType } from "react-icons";
 
+export type ImageType = {
+  url: string;
+  ref?: string;
+};
+
 export interface Position {
   x: number;
   y: number;
@@ -41,10 +46,10 @@ export interface ITool {
 
 export type ShapeType = "circle" | "square" | "triangle" | "rectangle";
 
-export type ImageType = {
-  uri: string;
-  extensionType: string;
-};
+// export type ImageType = {
+//   uri: string;
+//   extensionType: string;
+// };
 
 export interface IData {
   id: number | string;

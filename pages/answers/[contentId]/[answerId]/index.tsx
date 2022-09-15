@@ -8,8 +8,8 @@ import { useAuth } from "@/contexts/AuthContext";
 export interface OtherDataType {
   code: string;
   thumbnail: {
-    uri: string;
-    extensionType: string;
+    url: string;
+    ref: string;
   };
   user: string;
   _id: string;

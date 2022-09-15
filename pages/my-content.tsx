@@ -120,7 +120,7 @@ const MyContent = () => {
                       isOptionOpen={selectedContent === item._id}
                       onDelete={handleDeleteContent}
                     >
-                      <Image src={item.thumbnail.uri} layout="fill" />
+                      <Image src={item.thumbnail.url} layout="fill" />
                     </Card>
                   </div>
                 ))}

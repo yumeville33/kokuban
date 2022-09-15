@@ -314,7 +314,7 @@ const BoardData = ({
                 <React.Fragment key={d.id}>
                   <KonvaImage
                     key={d.id}
-                    src={d?.image?.uri!}
+                    src={d?.image?.url!}
                     ref={dataRefs[d.id as number] as React.Ref<Konva.Image>}
                     imageProps={{
                       x: d.position!.x,
