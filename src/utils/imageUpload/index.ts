@@ -41,17 +41,6 @@ const imageUpload = async (file: File | string) => {
   };
 
   return image;
-
-  // const imgUrl = await getDownloadURL(ref(storage, img?.ref.fullPath));
-
-  // const image = {
-  //   url: imgUrl,
-  //   ref: imageRef,
-  // };
-
-  // if (img?.ref.fullPath) {
-  //   return image;
-  // }
 };
 
 export default imageUpload;

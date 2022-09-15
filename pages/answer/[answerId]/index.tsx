@@ -4,13 +4,11 @@ import { Whiteboard as WhiteboardComponent } from "@/components/_page/Whiteboard
 import fetchAPI from "@/utils/fetch";
 import { useRouter } from "next/router";
 import { useAuth } from "@/contexts/AuthContext";
+import { ImageType } from "@/components/types";
 
 export interface OtherDataType {
   code: string;
-  thumbnail: {
-    url: string;
-    extensionType: string;
-  };
+  thumbnail: ImageType;
   user: string;
   _id: string;
   createdAt: string | Date;
