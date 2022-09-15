@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 
 import { Whiteboard as WhiteboardComponent } from "@/components/_page/Whiteboard";
 import fetchAPI from "@/utils/fetch";
-import { useRouter } from "next/router";
+import { ImageType } from "@/components/types";
 
 export interface OtherDataType {
   code: string;
-  thumbnail: {
-    uri: string;
-    extensionType: string;
-  };
+  thumbnail: ImageType;
   user: string;
   _id: string;
   createdAt: string | Date;

@@ -176,7 +176,7 @@ const Answer = () => {
                       isOptionOpen={selectedAnswer === item._id}
                       onDelete={handleDeleteAnswer}
                     >
-                      <Image src={item?.image?.uri} layout="fill" />
+                      <Image src={item?.image?.url} layout="fill" />
                     </Card>
                   </div>
                 ))}

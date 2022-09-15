@@ -15,7 +15,7 @@ const KonvaImage = React.forwardRef(
   (props: KonvaImageProps, ref: React.LegacyRef<Konva.Image> | undefined) => {
     const { src, imageProps, key } = props;
 
-    const [img] = useImage(src);
+    const [img] = useImage(src, "anonymous");
 
     return <Image key={key} ref={ref} image={img} {...imageProps} />;
   }

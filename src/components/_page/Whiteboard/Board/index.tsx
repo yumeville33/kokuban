@@ -12,6 +12,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { IData } from "@/components/types";
 import { MainButton } from "@/components/Buttons";
 import { OtherDataType } from "pages/whiteboard/[id]";
+import imageUpload from "@/utils/imageUpload";
 import BoardData from "../BoardData";
 
 Modal.setAppElement("#__next");
@@ -125,15 +126,16 @@ const Board = ({
     }
 
     const uri = stageRef.current?.toDataURL();
-    const imageType = uri?.split(";")[0].split("/")[1];
+    // const imageType = uri?.split(";")[0].split("/")[1];
+    if (!uri) return;
 
+    const imageUrl = await imageUpload(uri);
+
+    console.log("imageUrl", imageUrl);
     const isPATCH = router.query.id;
     const bodyData: any = {
       content: data,
-      thumbnail: {
-        uri,
-        extensionType: `image/${imageType}`,
-      },
+      thumbnail: imageUrl,
       title: whiteboardTitle || "Untitled",
     };
 
@@ -167,15 +169,16 @@ const Board = ({
     }
 
     const uri = stageRef.current?.toDataURL();
-    const imageType = uri?.split(";")[0].split("/")[1];
+    // const imageType = uri?.split(";")[0].split("/")[1];
+
+    if (!uri) return;
+
+    const imageUrl = await imageUpload(uri);
 
     const bodyData = {
       // TODO - Edit later
       content: [...data, ...studentData],
-      image: {
-        uri,
-        extensionType: `image/${imageType}`,
-      },
+      image: imageUrl,
       studentName,
       studentSection,
       schoolName,
