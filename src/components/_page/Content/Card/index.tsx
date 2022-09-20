@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 
 interface CardProps {
   children?: React.ReactNode;
@@ -28,23 +29,27 @@ const Card: React.FC<CardProps> = ({
   onDelete,
   isOptionOpen,
 }) => {
+  const { t, i18n } = useTranslation();
+
   const dateToday = date ? new Date(date) : new Date();
   const newDate = dateToday.toLocaleDateString();
   const time = dateToday.toLocaleTimeString();
   const dateTimeToday = `${newDate} ${time}`;
 
   return (
-    <div>
+    <div className={i18n.language === "en" ? "font-enSans" : "card-jaSans"}>
       <Link href={`${id || ""}`} passHref>
         <div
-          className={`h-[150px] w-[230px] cursor-pointer rounded-md ${className} border border-neutral-300`}
+          className={`h-[150px] w-[230px] cursor-pointer rounded-md ${className} border border-neutral-300 `}
         >
           {children}
         </div>
       </Link>
       <div className="flex items-center justify-between">
         <div>
-          <div className="text-lg text-neutral-700">{name || "Whiteboard"}</div>
+          <div className="text-lg text-neutral-700">
+            {name || t("content-card-title-default")}
+          </div>
           {section && (
             <div className="text-lg text-neutral-700">
               {section || "No section"}
@@ -58,7 +63,7 @@ const Card: React.FC<CardProps> = ({
           {date && <div className="text-neutral-500">{dateTimeToday}</div>}
           {grade !== undefined && (
             <div className="text-neutral-500">
-              Grade: {grade === 0 ? "No grade yet" : grade}
+              {t("answer-grade")}: {grade === 0 ? t("answer-no-grade") : grade}
             </div>
           )}
         </div>
@@ -85,7 +90,7 @@ const Card: React.FC<CardProps> = ({
                     className="block px-4 py-2 text-sm text-white "
                     onClick={onDelete}
                   >
-                    Delete
+                    {t("card-delete")}
                   </button>
                 </div>
               </div>

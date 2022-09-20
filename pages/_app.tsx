@@ -5,6 +5,7 @@ import { DefaultSeo } from "next-seo";
 import { AuthProvider } from "@/contexts";
 import SEO from "../next-seo.config";
 import "../styles/globals.css";
+import "../src/utils/i18n";
 
 import "react-toastify/dist/ReactToastify.css";
 

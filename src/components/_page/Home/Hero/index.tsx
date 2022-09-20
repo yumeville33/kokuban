@@ -5,9 +5,12 @@ import { toast } from "react-toastify";
 import { MainButton } from "@/components/Buttons";
 import { APP_NAME } from "@/constants";
 import fetchAPI from "@/utils/fetch";
+import { useTranslation } from "react-i18next";
 
 const Hero = () => {
   const router = useRouter();
+  const { t, i18n } = useTranslation();
+
   const [code, setCode] = React.useState<string>("");
 
   const handleCodeCheck = async () => {
@@ -30,14 +33,15 @@ const Hero = () => {
   };
 
   return (
-    <section>
+    <section className={i18n.language === "en" ? "font-enSans" : "font-jaSans"}>
       <div className="flex h-[120px] flex-col items-center justify-center space-y-2 bg-sky-200 md:h-[100px]  md:flex-row md:space-y-0 md:space-x-20">
-        <p className="text-neutral-800">Have your teacher&apos;s code?</p>
+        {/* <p className="text-neutral-800">Have your teacher&apos;s code?</p> */}
+        <p className="text-neutral-800">{t("landing-hero-code-1")}</p>
         <div>
           <input
             type="text"
             className="bg-white px-3 py-3 outline-none"
-            placeholder="Enter code"
+            placeholder={t("landing-hero-code-2")}
             value={code}
             onChange={(e) => setCode(e.target.value)}
           />
@@ -46,7 +50,7 @@ const Hero = () => {
             type="button"
             className="bg-sky-600 px-5 py-3 text-white"
           >
-            Join
+            {t("landing-hero-code-3")}
           </button>
         </div>
       </div>
@@ -60,17 +64,26 @@ const Hero = () => {
           <h1 className="text-2xl font-semibold">{APP_NAME}</h1>
           <div className="space-y-1">
             <div className="">
-              <h2 className="text-4xl font-bold">Students love it.</h2>
-              <h2 className="text-4xl font-bold">Teachers love it.</h2>
+              <h2
+                className={`${
+                  i18n.language === "en" ? "text-4xl" : "text-3xl"
+                } font-bold`}
+              >
+                {t("landing-hero-header-1")}
+              </h2>
+              <h2
+                className={`${
+                  i18n.language === "en" ? "text-4xl" : "text-3xl"
+                } font-bold`}
+              >
+                {t("landing-hero-header-2")}
+              </h2>
             </div>
-            <p>
-              {APP_NAME} is the simplest, most inclusive way to create content
-              in the classroom.
-            </p>
+            <p>{t("landing-hero-description")}</p>
           </div>
           <MainButton
             type="button"
-            text="Try Whiteboarding"
+            text={t("landing-hero-button")}
             className="hidden lg:block"
             onClick={() => {
               router.push("/whiteboard");
@@ -82,7 +95,7 @@ const Hero = () => {
         </div>
         <MainButton
           type="button"
-          text="Try Whiteboarding"
+          text={t("landing-hero-button")}
           className="block lg:hidden"
           onClick={() => {
             router.push("/whiteboard");

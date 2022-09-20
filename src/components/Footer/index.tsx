@@ -1,20 +1,29 @@
 import React from "react";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 
 import { APP_NAME, FOOTER_LINKS, FOOTER_SOCIAL_LINKS } from "@/constants";
 
 const Footer = () => {
+  const { t, i18n } = useTranslation();
+
   return (
-    <footer className="bg-sky-600 py-[100px] text-white">
-      <div className="flex flex-col items-center justify-center space-y-10 space-x-0 text-center md:flex-row md:space-y-0 md:space-x-40 md:text-left">
-        {FOOTER_LINKS.map(({ name, links }) => (
+    <footer
+      className={`bg-sky-600 py-[100px] text-white ${
+        i18n.language === "en" ? "font-enSans" : "font-jaSans"
+      }`}
+    >
+      <div className="flex flex-col items-start justify-center space-y-10 space-x-0 text-center md:flex-row md:space-y-0 md:space-x-40 md:text-left">
+        {FOOTER_LINKS.map(({ name, links }, index) => (
           <div key={name} className="">
-            <h4 className="text-2xl font-semibold">{name}</h4>
+            <h4 className="text-2xl font-semibold">
+              {t(`footer-title-${index + 1}`)}
+            </h4>
             <ul className="mt-3 list-none space-y-1">
-              {links.map((linkName) => (
+              {links.map((linkName, i) => (
                 <li key={linkName}>
                   <Link href="/" passHref>
-                    <a href="/">{linkName}</a>
+                    <a href="/">{t(`footer-link-${index + 1}-${i + 1}`)}</a>
                   </Link>
                 </li>
               ))}
@@ -33,7 +42,7 @@ const Footer = () => {
         ))}
       </div>
       <div className="mt-16 text-center">
-        &copy; {APP_NAME} | All Rights Reserved
+        &copy; {APP_NAME} | {t("footer-copyright-1")}
       </div>
     </footer>
   );

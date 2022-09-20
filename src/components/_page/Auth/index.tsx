@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-import { INPUT_ARRAYS } from "@/constants";
 import fetchAPI from "@/utils/fetch";
 import { IUser, IUserData } from "@/models/user";
 import { USER_DATA_STORAGE_KEY } from "@/contexts/AuthContext";
@@ -109,7 +108,6 @@ export const Auth = () => {
               : authEnum.sign_up;
           setAuthState(newAuthState);
         }}
-        inputArray={INPUT_ARRAYS[authState]}
         onSubmit={(e) => onSubmit(e)}
         inputActionAndValues={inputActionAndValues}
         error={error}
