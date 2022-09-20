@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { useTranslation } from "react-i18next";
 
 import { useAuth } from "@/contexts/AuthContext";
 import fetchAPI from "@/utils/fetch";
@@ -8,6 +9,7 @@ import { Layout, Spinner } from "@/components";
 const Table = () => {
   const router = useRouter();
   const { userData } = useAuth();
+  const { t, i18n } = useTranslation();
 
   const [studentGrades, setStudentGrades] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -91,15 +93,19 @@ const Table = () => {
     <div>
       {userData && (
         <Layout>
-          <div className="container mx-auto min-h-[calc(100vh-100px)] px-4 sm:px-6">
+          <div
+            className={`container mx-auto min-h-[calc(100vh-100px)] px-4 sm:px-6 ${
+              i18n.language === "en" ? "font-enSans" : "jaSans"
+            }`}
+          >
             <div className="py-8">
               <div className=" flex items-center justify-between">
                 <h2 className="text-2xl font-semibold leading-tight">
-                  Student grades
+                  {t("answer-table-header")}
                 </h2>
                 {selectedContent && (
                   <div className="flex items-center space-x-2">
-                    <p>Select material</p>
+                    <p>{t("answer-table-select-material")}</p>
                     <select
                       className="border border-neutral-300 py-1 px-2 outline-none"
                       defaultValue={selectedContent}
@@ -123,23 +129,23 @@ const Table = () => {
                       <tr>
                         <th className="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">
                           {" "}
-                          Student name{" "}
+                          {t("answer-table-head-1")}{" "}
                         </th>
                         <th className="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">
                           {" "}
-                          Section{" "}
+                          {t("answer-table-head-2")}{" "}
                         </th>
                         <th className="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">
                           {" "}
-                          School{" "}
+                          {t("answer-table-head-3")}{" "}
                         </th>
                         <th className="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">
                           {" "}
-                          Grade{" "}
+                          {t("answer-table-head-4")}{" "}
                         </th>
                         <th className="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">
                           {" "}
-                          Updated at{" "}
+                          {t("answer-table-head-5")}{" "}
                         </th>
                         {/* <th className="border-b-2 border-gray-200 bg-gray-100 px-5 py-3"></th> */}
                       </tr>

@@ -5,7 +5,12 @@ module.exports = {
   mode: "jit",
   content: ["./pages/**/*.{js,ts,jsx,tsx}", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        enSans: ["Poppins", "sans-serif"],
+        jaSans: ["Noto Sans JP", "sans-serif"],
+      },
+    },
     // colors: {
     //   grape: "#94618E",
     //   eggplant: "#49274A",

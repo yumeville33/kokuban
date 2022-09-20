@@ -11,8 +11,9 @@ import fetchAPI from "@/utils/fetch";
 import { useAuth } from "@/contexts/AuthContext";
 import { IData } from "@/components/types";
 import { MainButton } from "@/components/Buttons";
-import { OtherDataType } from "pages/whiteboard/[id]";
 import imageUpload from "@/utils/imageUpload";
+import { OtherDataType } from "pages/whiteboard/[id]";
+import { useTranslation } from "react-i18next";
 import BoardData from "../BoardData";
 
 Modal.setAppElement("#__next");
@@ -72,6 +73,7 @@ const Board = ({
 }: BoardProps) => {
   const { userData } = useAuth();
   const router = useRouter();
+  const { t, i18n } = useTranslation();
 
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -111,17 +113,17 @@ const Board = ({
 
   const onSave = async () => {
     if (!userData && buttonDisabled) {
-      toast.info("You have already sent your work.");
+      toast.info(t("whiteboard-save-student-2"));
       return;
     }
 
     if (userData && data.length < 1 && studentData.length < 1) {
-      toast.error("Please draw something before saving.");
+      toast.error(t("whiteboard-save-no-user-teacher-1"));
       return;
     }
 
     if (!userData && data.length < 1 && studentData.length > 0) {
-      toast.error("Please sign in to save your work.");
+      toast.error(t("whiteboard-save-no-user-teacher-2"));
       return;
     }
 
@@ -131,12 +133,11 @@ const Board = ({
 
     const imageUrl = await imageUpload(uri);
 
-    console.log("imageUrl", imageUrl);
     const isPATCH = router.query.id;
     const bodyData: any = {
       content: data,
       thumbnail: imageUrl,
-      title: whiteboardTitle || "Untitled",
+      title: whiteboardTitle || null,
     };
 
     if (isPATCH) bodyData.contentId = isPATCH;
@@ -154,7 +155,7 @@ const Board = ({
     }
 
     if (userData && isPATCH) {
-      toast.success("Your work has been saved.");
+      toast.success(t("whiteboard-save-teacher-1"));
     }
 
     if (!userData) {
@@ -164,7 +165,7 @@ const Board = ({
 
   const onStudentSubmit = async () => {
     if (!studentName || !studentSection || !schoolName) {
-      toast.error("Please fill all the fields");
+      toast.error(t("whiteboard-save-student-error-1"));
       return;
     }
 
@@ -195,24 +196,24 @@ const Board = ({
     );
     if (res.status === "success") {
       setIsModalOpen(() => false);
-      toast.success("Your work has been sent to the teacher.");
+      toast.success(t("whiteboard-save-student-1"));
       setButtonDisabled(() => true);
     }
   };
 
   const modalContent = [
     {
-      label: "Name",
+      label: t("whiteboard-save-student-field-1"),
       value: studentName,
       setValue: setStudentName,
     },
     {
-      label: "Section",
+      label: t("whiteboard-save-student-field-1"),
       value: studentSection,
       setValue: setStudentSection,
     },
     {
-      label: "School Name",
+      label: t("whiteboard-save-student-field-1"),
       value: schoolName,
       setValue: setSchoolName,
     },
@@ -222,7 +223,9 @@ const Board = ({
     <div
       ref={boardRef}
       // className="flex h-[calc(100%-150px)] items-center justify-center bg-white"
-      className="flex h-full items-center justify-center bg-white"
+      className={`flex h-full items-center justify-center bg-white ${
+        i18n.language === "en" ? "enSans" : "jaSans"
+      }`}
     >
       <Modal
         isOpen={isModalOpen}
@@ -246,7 +249,11 @@ const Board = ({
               />
             );
           })}
-          <MainButton text="Submit" type="button" onClick={onStudentSubmit} />
+          <MainButton
+            text={t("whiteboard-save-button-2")}
+            type="button"
+            onClick={onStudentSubmit}
+          />
         </div>
       </Modal>
       {/* 150px */}
@@ -256,7 +263,9 @@ const Board = ({
           className="absolute right-[25px] bottom-[20px] z-[140]  cursor-pointer rounded-md bg-sky-600 px-4 py-2 text-white outline-none"
           onClick={onSave}
         >
-          {!userData && router.query.id ? "Submit" : "Save"}
+          {!userData && router.query.id
+            ? t("whiteboard-save-button-2")
+            : t("whiteboard-save-button-1")}
         </button>
       )}
       <Stage

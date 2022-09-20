@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { OtherDataType } from "pages/whiteboard/[id]";
 import { MainButton } from "@/components/Buttons";
 import fetchAPI from "@/utils/fetch";
+import { useTranslation } from "react-i18next";
 
 Modal.setAppElement("#__next");
 
@@ -36,6 +37,7 @@ const Header = ({
 }: HeaderProps) => {
   const { userData } = useAuth();
   const router = useRouter();
+  const { t, i18n } = useTranslation();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [grade, setGrade] = useState(0);
@@ -71,7 +73,11 @@ const Header = ({
   };
 
   return (
-    <div className="z-[999] flex h-[70px] w-full items-center justify-between bg-white px-5 shadow-md shadow-neutral-200 drop-shadow-sm">
+    <div
+      className={`z-[999] flex h-[70px] w-full items-center justify-between bg-white px-5 shadow-md shadow-neutral-200 drop-shadow-sm ${
+        i18n.language === "en" ? "enSans" : "jaSans"
+      }`}
+    >
       <Modal
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(() => false)}
@@ -83,7 +89,7 @@ const Header = ({
             className="w-[300px] border border-neutral-300 px-3 py-3 outline-none"
             type="number"
             required
-            placeholder="Grade"
+            placeholder={t("whiteboard-header-grade")}
             value={grade}
             onChange={(e) => {
               // only numbers allowed
@@ -92,7 +98,11 @@ const Header = ({
               }
             }}
           />
-          <MainButton text="Submit Grade" type="button" onClick={onPutGrade} />
+          <MainButton
+            text={t("whiteboard-header-submit-grade")}
+            type="button"
+            onClick={onPutGrade}
+          />
         </div>
       </Modal>
       <div className="flex items-center space-x-3 text-neutral-800">
@@ -116,7 +126,7 @@ const Header = ({
         <input
           type="text"
           className="rounded-lg border border-neutral-200 px-3 py-2 text-xl outline-none"
-          placeholder="Whiteboard name"
+          placeholder={t("whiteboard-header-title")}
           value={whiteboardTitle}
           onChange={(e) => {
             if (userData) setWhiteboardTitle(e.target.value);
@@ -136,7 +146,7 @@ const Header = ({
             className="rounded-md bg-sky-400 px-3 py-1 text-white"
             onClick={() => setIsModalOpen(() => true)}
           >
-            Put grade
+            {t("whiteboard-header-put-grade")}
           </button>
         )}
         {userData && router?.query?.id && (
@@ -145,7 +155,7 @@ const Header = ({
             className="rounded-md bg-sky-400 px-3 py-1 text-white"
             onClick={onShareClick}
           >
-            Share
+            {t("whiteboard-header-share")}
           </button>
         )}
 

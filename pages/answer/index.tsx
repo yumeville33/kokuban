@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useTranslation } from "react-i18next";
 
 import { useAuth } from "@/contexts/AuthContext";
 import fetchAPI from "@/utils/fetch";
@@ -12,14 +13,14 @@ import { toast } from "react-toastify";
 const Answer = () => {
   const { userData } = useAuth();
   const router = useRouter();
+  const { t, i18n } = useTranslation();
+
   const [data, setData] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [dataFetched, setDataFetched] = useState<boolean>(false);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [selectedContent, setSelectedContent] = useState<string | null>(null);
   const [contents, setContents] = useState<any>([]);
-
-  console.log("selectedContent", selectedContent);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -42,8 +43,6 @@ const Answer = () => {
           }/getUserContent`,
           "GET"
         );
-
-        console.log("res", res);
 
         if (res.status === "success") {
           setSelectedContent(res.data.data[0]._id);
@@ -114,23 +113,27 @@ const Answer = () => {
     <div>
       {userData && (
         <Layout>
-          <main className="relative mx-auto min-h-[calc(100vh-100px)] max-w-[2560px] px-10 md:px-20">
+          <main
+            className={`relative mx-auto min-h-[calc(100vh-100px)] max-w-[2560px] px-10 md:px-20 ${
+              i18n.language === "en" ? "font-enSans" : "jaSans"
+            }`}
+          >
             <div className="mb-6 flex items-center justify-between">
               <div className="flex items-center  space-x-5">
                 <h2 className="text-2xl font-bold text-gray-800">
-                  Student answers
+                  {t("answer-header")}
                 </h2>
                 {data.length > 0 && (
                   <Link href="/answer/table">
                     <p className="cursor-pointer text-sky-600">
-                      View grades in table format
+                      {t("answer-link-1")}
                     </p>
                   </Link>
                 )}
               </div>
               {selectedContent && (
                 <div className="flex items-center space-x-2">
-                  <p>Select material</p>
+                  <p>{t("answer-select-material")}</p>
                   <select
                     className="border border-neutral-300 py-1 px-2 outline-none"
                     defaultValue={selectedContent}
@@ -140,7 +143,7 @@ const Answer = () => {
                   >
                     {contents.map((content: any) => (
                       <option key={content._id} value={content._id}>
-                        {content.title}
+                        {content.title || t("answer-no-title")}
                       </option>
                     ))}
                   </select>
@@ -152,7 +155,9 @@ const Answer = () => {
                 <Spinner />
               </div>
             )}
-            {!loading && data.length === 0 && <div>No answers yet</div>}
+            {!loading && data.length === 0 && (
+              <div>{t("answer-no-answer")}</div>
+            )}
             <div className="mt-3 flex">
               {data &&
                 data.length > 0 &&

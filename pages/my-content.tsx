@@ -3,6 +3,7 @@ import Image from "next/image";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 import { useAuth } from "@/contexts/AuthContext";
 import fetchAPI from "@/utils/fetch";
@@ -13,6 +14,8 @@ import Link from "next/link";
 const MyContent = () => {
   const router = useRouter();
   const { userData } = useAuth();
+  const { t, i18n } = useTranslation();
+
   const [data, setData] = useState<any>([]);
   const [dataFetched, setDataFetched] = useState<boolean>(false);
   const [selectedContent, setSelectedContent] = useState<string | null>(null);
@@ -66,12 +69,12 @@ const MyContent = () => {
       if (res.status === "success") {
         setData(data.filter((item: any) => item._id !== selectedContent));
         setSelectedContent(null);
-        toast.success("Material deleted successfully");
+        toast.success(t("content-msg-success-1"));
       } else {
-        toast.error("Something went wrong! Cannot delete content.");
+        toast.error(t("content-msg-error-1"));
       }
     } catch (error) {
-      toast.error("Something went wrong! Cannot delete content.");
+      toast.error(t("content-msg-error-1"));
       // setSelectedContent(null);
     }
   };
@@ -80,14 +83,18 @@ const MyContent = () => {
     <div>
       {userData && (
         <Layout>
-          <main className="relative mx-auto min-h-[calc(100vh-100px)] max-w-[2560px] px-10 md:px-20">
+          <main
+            className={`relative mx-auto min-h-[calc(100vh-100px)] max-w-[2560px] px-10 md:px-20 ${
+              i18n.language === "en" ? "font-enSans" : "font-jaSans"
+            }`}
+          >
             <div className="flex items-center space-x-5">
               <h2 className="mb-5 text-2xl font-bold text-gray-800">
-                Projects
+                {t("content-header")}
               </h2>
               <Link href="/answer">
                 <p className="mb-[15px] cursor-pointer text-sky-600">
-                  View submitted materials by students
+                  {t("content-link-1")}
                 </p>
               </Link>
             </div>
@@ -109,7 +116,7 @@ const MyContent = () => {
                       className="relative"
                       id={`/whiteboard/${item._id}`}
                       date={item.updatedAt}
-                      name={item.title}
+                      name={item.title || t("content-card-title-untitled")}
                       onOptionClick={() => {
                         if (selectedContent === item._id) {
                           setSelectedContent(null);

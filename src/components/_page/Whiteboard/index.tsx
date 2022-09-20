@@ -34,8 +34,6 @@ export const Whiteboard = ({ data, otherData }: WhiteboardProps) => {
 
   const [templateData, setTemplateData] = useState<Array<IData[]>>([]);
 
-  console.log("tempalte data", templateData);
-
   const isDrawing = React.useRef(false);
 
   React.useEffect(() => {
