@@ -40,7 +40,7 @@ const traverse = function (enObj, jaObj, arr) {
 
 const read = async () => {
   await doc.loadInfo(); //# loads document properties and worksheets
-  const sheet = doc.sheetsByTitle.Sheet1; //# get the sheet by title, I left the default title name. If you changed it, then you should use the name of your sheet
+  const sheet = doc.sheetsByTitle.Translation; //# get the sheet by title, I left the default title name. If you changed it, then you should use the name of your sheet
   const rows = await sheet.getRows({ limit: sheet.rowCount }); //# fetch rows from the sheet (limited to row count)
   //# read /public/locales/en/translation.json
   const en = fs.readFileSync(`./public/locales/en/translation.json`, {
@@ -66,7 +66,7 @@ const read = async () => {
 
 const append = async (data) => {
   await doc.loadInfo(); //# loads document properties and worksheets
-  const sheet = doc.sheetsByTitle.Sheet1; //# get the sheet by title, I left the default title name. If you changed it, then you should use the name of your sheet
+  const sheet = doc.sheetsByTitle.Translation; //# get the sheet by title, I left the default title name. If you changed it, then you should use the name of your sheet
   await await sheet.addRows(data); //# append rows
 };
 
