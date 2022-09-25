@@ -27,6 +27,7 @@ export interface IShapes {
 
 export type ActiveToolType =
   | "drag"
+  | "material"
   | "template"
   | "image"
   | "shapes"
