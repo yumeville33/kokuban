@@ -11,6 +11,7 @@ import {
   BsPen,
   BsSquare,
   BsTriangle,
+  BsImages,
 } from "react-icons/bs";
 import {
   FaLinkedinIn,
@@ -130,6 +131,10 @@ export const TOOLS: ITool[] = [
   {
     name: "template",
     Icon: HiTemplate,
+  },
+  {
+    name: "material",
+    Icon: BsImages,
   },
   {
     name: "image",

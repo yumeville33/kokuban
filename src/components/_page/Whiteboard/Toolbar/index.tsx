@@ -10,6 +10,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import fetchAPI from "@/utils/fetch";
 import NextImage from "next/image";
 import imageUpload from "@/utils/imageUpload";
+import { useMaterials } from "@/hooks";
+import { blobUrlToFile } from "@/utils/images";
 
 interface ToolbarProps {
   activeTool: string;
@@ -47,6 +49,8 @@ const Toolbar = ({
   setTemplateData,
 }: ToolbarProps) => {
   const { userData } = useAuth();
+  const { materials, currentMaterials, handlePrev, handleNext } =
+    useMaterials();
 
   const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
   const [textColorPickerOpen, setTextColorPickerOpen] = useState(false);
@@ -61,6 +65,42 @@ const Toolbar = ({
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [text, setText] = useState("");
   const [textSize, setTextSize] = useState(20);
+
+  const handleMaterialClick = async (material: string) => {
+    const file = await blobUrlToFile(material);
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.src = (e.target as any).result;
+      img.onload = () => {
+        const percentage = (150 / img.height) * 100;
+        const newWidth = img.width * (percentage / 100);
+
+        const imgData: IData = {
+          id: userData ? data.length + 1 : studentData.length + 1,
+          toolType: "image" as ActiveToolType,
+          position: { x: 100, y: 100 },
+          size: { width: newWidth, height: 150 },
+          originalSize: { width: img.width, height: img.height },
+          image: {
+            url: material,
+            ref: material,
+          },
+        };
+
+        if (userData) {
+          setData([...data, imgData]);
+        } else {
+          setStudentData([...studentData, imgData]);
+        }
+      };
+    };
+
+    reader.readAsDataURL(file);
+
+    setActiveTool("drag");
+  };
 
   useEffect(() => {
     const getOtherUserContents = async () => {
@@ -102,10 +142,6 @@ const Toolbar = ({
             position: { x: 100, y: 100 },
             size: { width: newWidth, height: 150 },
             originalSize: { width: image.width, height: image.height },
-            // image: {
-            //   uri: image.src,
-            //   extensionType: file.type,
-            // },
             image: imageUrl,
           };
 
@@ -315,7 +351,7 @@ const Toolbar = ({
   };
 
   return (
-    <div className="relative z-[50] flex h-full w-[70px] flex-col items-center justify-center space-y-1 border-r-2 bg-white">
+    <div className="relative z-[50] flex h-[calc(100%)] w-[70px] flex-col items-center justify-center space-y-1 border-r-2 bg-white">
       {TOOLS &&
         TOOLS.map(({ name, Icon }) => {
           if (name === "template" && !userData) return null;
@@ -326,7 +362,7 @@ const Toolbar = ({
                 <input
                   ref={imageInputRef}
                   type="file"
-                  accept="image/png, image/jpeg"
+                  accept="image/*"
                   className="hidden"
                   onChange={(e) => handleFileChange(e)}
                 />
@@ -341,13 +377,76 @@ const Toolbar = ({
                 <Icon
                   className={`${
                     name === activeTool && "text-white"
-                  } h-[30px] w-[30px]`}
+                  } h-[25px] w-[25px] xl:h-[30px] xl:w-[30px]`}
                 />
               </button>
+              {activeTool === "material" && name === "material" && isToolOpen && (
+                <div className="absolute left-[70px]  w-auto rounded-lg border border-neutral-400 bg-white p-2">
+                  <div className="mb-2 text-center text-sm">Materials</div>
+                  {materials && materials.length === 0 && (
+                    <div className="text-center text-sm text-neutral-400">
+                      No material available
+                    </div>
+                  )}
+                  <div className="grid w-[410px] grid-cols-3 gap-[5px]">
+                    {currentMaterials.map((material) => (
+                      <button
+                        key={material}
+                        className="relative h-[80px] w-[130px] border border-neutral-300"
+                        type="button"
+                        onClick={() => {
+                          handleMaterialClick(material);
+                        }}
+                      >
+                        {/* <NextImage
+                          layout="fill"
+                          objectPosition="center"
+                          objectFit="contain"
+                          src={material}
+                        /> */}
+                        <img
+                          src={material}
+                          alt=""
+                          className="h-full w-full object-contain object-center"
+                        />
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="mt-[10px] flex w-full">
+                    <div className="mx-auto space-x-3">
+                      <button
+                        type="button"
+                        className="rounded-md border border-neutral-300 bg-neutral-300 py-[2px] px-5 text-sm font-medium text-neutral-700"
+                        onClick={() => {
+                          handlePrev();
+                        }}
+                      >
+                        previous
+                      </button>
+                      <button
+                        type="button"
+                        className="rounded-md border border-neutral-300 bg-neutral-300 py-[2px] px-5 text-sm font-medium text-neutral-700"
+                        onClick={() => {
+                          handleNext();
+                        }}
+                      >
+                        next
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
               {activeTool === "template" && name === "template" && isToolOpen && (
                 <div className="absolute left-[70px]  rounded-lg border border-neutral-400 bg-white p-2">
                   <div className="mb-2 text-center text-sm">Templates</div>
                   <div className="space-y-2">
+                    {templates.length === 0 && (
+                      <div className="text-center text-sm text-neutral-400">
+                        No template available
+                      </div>
+                    )}
+                    <div></div>
                     {templates.map((template) => (
                       <button
                         key={template._id}

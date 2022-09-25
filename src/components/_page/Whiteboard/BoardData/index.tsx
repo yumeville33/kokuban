@@ -92,7 +92,6 @@ const BoardData = ({
       const scaleX = node?.scaleX();
       const scaleY = node?.scaleY();
 
-      // we will reset it back
       node.scaleX(1);
       node.scaleY(1);
 
