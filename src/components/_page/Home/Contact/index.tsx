@@ -13,7 +13,8 @@ const Contact = () => {
 
   return (
     <section
-      className={`py-[100px] px-10 ${
+      id="contact"
+      className={`py-[100px] px-1 sm:px-5 md:px-10 ${
         i18n.language === "en" ? "font-enSans" : "font-jaSans"
       }`}
     >

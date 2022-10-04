@@ -1,14 +1,14 @@
-const title = "Educapp";
+const title = "Kokuban";
 
 const description =
-  "Educapp is a platform that allows you to create and share educational content.";
+  "Kokuban is a platform that allows you to create and share educational content.";
 
 export default {
   title,
   description,
   openGraph: {
     type: "website",
-    url: "https://educapp.vercel.app/",
+    url: "https://kokuban.vercel.app/",
     title,
     description,
     images: [

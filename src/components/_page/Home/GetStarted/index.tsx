@@ -9,7 +9,7 @@ const GetStarted = () => {
 
   return (
     <section
-      className={`bg-sky-600 py-[100px] text-white ${
+      className={`bg-sky-600 py-[100px] px-1 text-white md:px-0 ${
         i18n.language === "en" ? "font-enSans" : "font-jaSans"
       }`}
     >

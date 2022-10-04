@@ -223,7 +223,7 @@ const Board = ({
     <div
       ref={boardRef}
       // className="flex h-[calc(100%-150px)] items-center justify-center bg-white"
-      className={`flex h-full items-center justify-center bg-white ${
+      className={`flex h-full w-full items-center justify-center bg-white ${
         i18n.language === "en" ? "enSans" : "jaSans"
       }`}
     >
@@ -272,23 +272,23 @@ const Board = ({
         ref={stageRef}
         onMouseDown={(e) => {
           checkDeselect(e);
-
-          if (isDrawing) {
-            handleMouseDown(e);
-          }
+          if (isDrawing) handleMouseDown(e);
         }}
         onMousemove={(e: any) => {
-          if (isDrawing) {
-            handleMouseMove(e);
-          }
+          if (isDrawing) handleMouseMove(e);
         }}
         onMouseup={() => {
-          if (isDrawing) {
-            handleMouseUp();
-          }
+          if (isDrawing) handleMouseUp();
         }}
         onTouchStart={(e) => {
           checkDeselect(e);
+          if (isDrawing) handleMouseDown(e);
+        }}
+        onTouchMove={(e) => {
+          if (isDrawing) handleMouseMove(e);
+        }}
+        onTouchEnd={() => {
+          if (isDrawing) handleMouseUp();
         }}
         width={boardSize.width}
         height={boardSize.height}

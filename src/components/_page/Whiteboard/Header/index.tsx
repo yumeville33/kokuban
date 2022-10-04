@@ -75,7 +75,7 @@ const Header = ({
   return (
     <div
       className={`z-[999] flex h-[70px] w-full items-center justify-between bg-white px-5 shadow-md shadow-neutral-200 drop-shadow-sm ${
-        i18n.language === "en" ? "enSans" : "jaSans"
+        i18n.language === "en" ? "font-enSans" : "font-jaSans"
       }`}
     >
       <Modal
@@ -84,7 +84,7 @@ const Header = ({
         contentLabel="Student info modal"
         style={modalCustomStyle}
       >
-        <div className="flex  flex-col space-y-5">
+        <div className="flex flex-col space-y-5">
           <input
             className="w-[300px] border border-neutral-300 px-3 py-3 outline-none"
             type="number"
@@ -105,7 +105,7 @@ const Header = ({
           />
         </div>
       </Modal>
-      <div className="flex items-center space-x-3 text-neutral-800">
+      <div className="flex w-full items-center space-x-3 text-neutral-800">
         <button
           type="button"
           onClick={() => {
@@ -139,35 +139,29 @@ const Header = ({
         )}
       </div>
 
-      <div className="flex items-center space-x-3">
-        {router.asPath.includes("answer") && (
-          <button
-            type="button"
-            className="rounded-md bg-sky-400 px-3 py-1 text-white"
-            onClick={() => setIsModalOpen(() => true)}
-          >
-            {t("whiteboard-header-put-grade")}
-          </button>
-        )}
-        {userData && router?.query?.id && (
-          <button
-            type="button"
-            className="rounded-md bg-sky-400 px-3 py-1 text-white"
-            onClick={onShareClick}
-          >
-            {t("whiteboard-header-share")}
-          </button>
-        )}
-
-        {userData && (
-          <button
-            type="button"
-            className="h-[40px] w-[40px] rounded-full bg-neutral-300"
-          >
-            {userData.data.user.email[0].toUpperCase()}
-          </button>
-        )}
-      </div>
+      {(router.asPath.includes("answer") ||
+        (userData && router?.query?.id)) && (
+        <div className="flex items-center space-x-3">
+          {router.asPath.includes("answer") && (
+            <button
+              type="button"
+              className="rounded-md bg-sky-400 px-3 py-1 text-white"
+              onClick={() => setIsModalOpen(() => true)}
+            >
+              {t("whiteboard-header-put-grade")}
+            </button>
+          )}
+          {userData && router?.query?.id && (
+            <button
+              type="button"
+              className="rounded-md bg-sky-400 px-3 py-1 text-white"
+              onClick={onShareClick}
+            >
+              {t("whiteboard-header-share")}
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 };

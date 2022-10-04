@@ -136,27 +136,25 @@ export const Whiteboard = ({ data, otherData }: WhiteboardProps) => {
           templateData={templateData}
           setTemplateData={setTemplateData}
         />
-        <div className="h-full w-full bg-neutral-300">
-          <DynamicBoard
-            handleMouseDown={handleMouseDown}
-            handleMouseMove={handleMouseMove}
-            handleMouseUp={handleMouseUp}
-            activeTool={activeTool}
-            // color={color}
-            data={boardData}
-            setData={setBoardData}
-            selectedElement={selectedElement}
-            setSelectedElement={setSelectedElement}
-            studentData={studentBoardData}
-            setStudentData={setStudentBoardData}
-            studentSelectedElement={studentSelectedElement}
-            setStudentSelectedElement={setStudentSelectedElement}
-            otherData={otherData}
-            whiteboardTitle={whiteboardTitle || otherData?.title || ""}
-            templateData={templateData}
-          />
-          {/* <Projects /> */}
-        </div>
+        <DynamicBoard
+          handleMouseDown={handleMouseDown}
+          handleMouseMove={handleMouseMove}
+          handleMouseUp={handleMouseUp}
+          activeTool={activeTool}
+          // color={color}
+          data={boardData}
+          setData={setBoardData}
+          selectedElement={selectedElement}
+          setSelectedElement={setSelectedElement}
+          studentData={studentBoardData}
+          setStudentData={setStudentBoardData}
+          studentSelectedElement={studentSelectedElement}
+          setStudentSelectedElement={setStudentSelectedElement}
+          otherData={otherData}
+          whiteboardTitle={whiteboardTitle || otherData?.title || ""}
+          templateData={templateData}
+        />
+        {/* <Projects /> */}
       </div>
     </div>
   );

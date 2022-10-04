@@ -1,10 +1,11 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable no-lonely-if */
 import React, { useRef, useState, useEffect } from "react";
 import { GoPrimitiveDot } from "react-icons/go";
 import { ChromePicker } from "react-color";
 import { MdColorLens } from "react-icons/md";
 
-import { TOOLS, SHAPES, SIZES } from "@/constants";
+import { TOOLS, SHAPES, SIZES, materialCategories } from "@/constants";
 import { ActiveToolType, IData, ShapeType } from "@/components/types";
 import { useAuth } from "@/contexts/AuthContext";
 import fetchAPI from "@/utils/fetch";
@@ -12,6 +13,7 @@ import NextImage from "next/image";
 import imageUpload from "@/utils/imageUpload";
 import { useMaterials } from "@/hooks";
 import { blobUrlToFile } from "@/utils/images";
+import { useTranslation } from "react-i18next";
 
 interface ToolbarProps {
   activeTool: string;
@@ -49,8 +51,7 @@ const Toolbar = ({
   setTemplateData,
 }: ToolbarProps) => {
   const { userData } = useAuth();
-  const { materials, currentMaterials, handlePrev, handleNext } =
-    useMaterials();
+  const { i18n } = useTranslation();
 
   const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
   const [textColorPickerOpen, setTextColorPickerOpen] = useState(false);
@@ -58,6 +59,13 @@ const Toolbar = ({
   const [previousColor, setPreviousColor] = useState<string | null>(null);
   const [isToolOpen, setIsToolOpen] = useState(false);
   const [templates, setTemplates] = useState<Array<any>>([]);
+  const [selectedMaterial, setSelectedMaterial] = useState<string>("art");
+
+  // const { materials, currentMaterials, handlePrev, handleNext, loading } =
+  //   useMaterials(selectedMaterial.toLowerCase().replace(/ /g, "-"));
+
+  const { materials, currentMaterials, handlePrev, handleNext, loading } =
+    useMaterials(selectedMaterial);
 
   const [deletedData, setDeletedData] = useState<Array<any>>([]);
   const [studentDeletedData, setStudentDeletedData] = useState<Array<any>>([]);
@@ -65,6 +73,8 @@ const Toolbar = ({
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [text, setText] = useState("");
   const [textSize, setTextSize] = useState(20);
+
+  console.log("selectedMaterial", selectedMaterial);
 
   const handleMaterialClick = async (material: string) => {
     const file = await blobUrlToFile(material);
@@ -351,7 +361,11 @@ const Toolbar = ({
   };
 
   return (
-    <div className="relative z-[50] flex h-[calc(100%)] w-[70px] flex-col items-center justify-center space-y-1 border-r-2 bg-white">
+    <div
+      className={`relative z-[50] flex h-full w-[70px] flex-col items-center justify-center space-y-1 border-r-2 bg-white ${
+        i18n.language === "en" ? "font-enSans" : "font-jaSans"
+      }`}
+    >
       {TOOLS &&
         TOOLS.map(({ name, Icon }) => {
           if (name === "template" && !userData) return null;
@@ -382,35 +396,64 @@ const Toolbar = ({
               </button>
               {activeTool === "material" && name === "material" && isToolOpen && (
                 <div className="absolute left-[70px]  w-auto rounded-lg border border-neutral-400 bg-white p-2">
-                  <div className="mb-2 text-center text-sm">Materials</div>
+                  <div className="flex items-center justify-between py-3 px-2">
+                    {/* <div className="text-lg font-medium">
+                      Choose type of material
+                    </div> */}
+                    <select
+                      className="rounded-lg border border-neutral-400 px-2 py-1 outline-none"
+                      onChange={(e) => {
+                        console.log("e.target.value", e.target.value);
+                        setSelectedMaterial(e.target.value);
+                      }}
+                    >
+                      {materialCategories.map((category) => {
+                        return (
+                          <option key={category.key} value={category.key}>
+                            {i18n.language === "en"
+                              ? category.enName
+                              : category.jaName}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
                   {materials && materials.length === 0 && (
                     <div className="text-center text-sm text-neutral-400">
                       No material available
                     </div>
                   )}
+                  {loading && (
+                    <div className="flex h-[240px] items-center justify-center">
+                      <p>Loading materials...</p>
+                    </div>
+                  )}
                   <div className="grid w-[410px] grid-cols-3 gap-[5px]">
-                    {currentMaterials.map((material) => (
-                      <button
-                        key={material}
-                        className="relative h-[80px] w-[130px] border border-neutral-300"
-                        type="button"
-                        onClick={() => {
-                          handleMaterialClick(material);
-                        }}
-                      >
-                        {/* <NextImage
+                    {!loading &&
+                      currentMaterials.map((material) => (
+                        <button
+                          key={material}
+                          className="relative h-[80px] w-[130px] border border-neutral-300"
+                          type="button"
+                          onClick={() => {
+                            handleMaterialClick(material);
+                          }}
+                        >
+                          {/* <NextImage
                           layout="fill"
                           objectPosition="center"
                           objectFit="contain"
                           src={material}
                         /> */}
-                        <img
-                          src={material}
-                          alt=""
-                          className="h-full w-full object-contain object-center"
-                        />
-                      </button>
-                    ))}
+                          {/* // eslint-disable-next-line @next/next/no-img-element */}
+
+                          <img
+                            src={material}
+                            alt=""
+                            className="h-full w-full object-contain object-center"
+                          />
+                        </button>
+                      ))}
                   </div>
 
                   <div className="mt-[10px] flex w-full">

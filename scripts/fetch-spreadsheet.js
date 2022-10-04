@@ -2,14 +2,14 @@ const { GoogleSpreadsheet } = require("google-spreadsheet");
 const fs = require("fs");
 const dotenv = require("dotenv");
 
-dotenv.config();
+dotenv.config({
+  path: "./.env",
+});
 
-//# Initialize the sheet
 const doc = new GoogleSpreadsheet(
   "1ruB6ZFNyvG1b_auGfY5418XRwQKZXUdO_IvCnXXqOuo"
-); //# spreadsheet ID
+);
 
-//# Initialize Auth
 const init = async () => {
   await doc.useServiceAccountAuth({
     client_email: process.env.GOOGLE_CLIENT_EMAIL,
@@ -18,14 +18,12 @@ const init = async () => {
 };
 
 const read = async () => {
-  await doc.loadInfo(); //# loads document properties and worksheets
-  const sheet = doc.sheetsByTitle.Translation; //# get the sheet by title, I left the default title name. If you changed it, then you should use the name of your sheet
-  await sheet.loadHeaderRow(); //# loads the header row (first row) of the sheet
-  const colTitles = sheet.headerValues; //# array of strings from cell values in the first row
-  const rows = await sheet.getRows({ limit: sheet.rowCount }); //# fetch rows from the sheet (limited to row count)
+  await doc.loadInfo();
+  const sheet = doc.sheetsByTitle.Translation;
+  await sheet.loadHeaderRow();
+  const colTitles = sheet.headerValues;
+  const rows = await sheet.getRows({ limit: sheet.rowCount });
   let result = {};
-  //# map rows values and create an object with keys as columns titles starting from the second column (languages names) and values as an object with key value pairs, where the key is a key of translation, and value is a translation in a respective language
-  // eslint-disable-next-line array-callback-return
   rows.map((row) => {
     colTitles.slice(1).forEach((title) => {
       result[title] = result[title] || [];

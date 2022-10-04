@@ -11,7 +11,8 @@ const Features = () => {
 
   return (
     <section
-      className={`py-10 pb-[100px] text-neutral-800 ${
+      id="features"
+      className={`py-10 px-1 pb-[100px] text-neutral-800 md:px-0 ${
         i18n.language === "en" ? "font-enSans" : "font-jaSans"
       }`}
     >
@@ -21,7 +22,7 @@ const Features = () => {
       <p className="mx-auto mb-10 max-w-[600px] text-center md:mb-16">
         {t("landing-feature-description")}
       </p>
-      <div className="mx-auto mb-16 flex max-w-[700px] flex-col items-start justify-between space-y-12 md:flex-row md:space-y-0 ">
+      <div className="mx-auto mb-16 flex max-w-[700px] flex-col items-center space-y-12 md:flex-row md:items-start md:justify-between md:space-y-0 ">
         {features.map((_, index) => (
           <div key={keyGenerator(index)}>
             <div className="mb-6 flex h-[250px] w-[250px] items-center justify-center bg-sky-200 text-neutral-700 md:mb-8 lg:h-[300px] lg:w-[300px]">

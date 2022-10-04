@@ -1,19 +1,20 @@
 import React from "react";
-import Link from "next/link";
+// import Link from "next/link";
 import { useTranslation } from "react-i18next";
 
-import { APP_NAME, FOOTER_LINKS, FOOTER_SOCIAL_LINKS } from "@/constants";
+// import { APP_NAME, FOOTER_LINKS, FOOTER_SOCIAL_LINKS } from "@/constants";
+import { APP_NAME } from "@/constants";
 
 const Footer = () => {
   const { t, i18n } = useTranslation();
 
   return (
     <footer
-      className={`bg-sky-600 py-[100px] text-white ${
+      className={`bg-sky-600 py-[20px] text-white ${
         i18n.language === "en" ? "font-enSans" : "font-jaSans"
       }`}
     >
-      <div className="flex flex-col items-start justify-center space-y-10 space-x-0 text-center md:flex-row md:space-y-0 md:space-x-40 md:text-left">
+      {/* <div className="flex flex-col items-start justify-center space-y-10 space-x-0 text-center md:flex-row md:space-y-0 md:space-x-40 md:text-left">
         {FOOTER_LINKS.map(({ name, links }, index) => (
           <div key={name} className="">
             <h4 className="text-2xl font-semibold">
@@ -40,8 +41,8 @@ const Footer = () => {
             </a>
           </Link>
         ))}
-      </div>
-      <div className="mt-16 text-center">
+      </div> */}
+      <div className="text-center">
         &copy; {APP_NAME} | {t("footer-copyright-1")}
       </div>
     </footer>

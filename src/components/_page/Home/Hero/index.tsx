@@ -34,10 +34,10 @@ const Hero = () => {
 
   return (
     <section className={i18n.language === "en" ? "font-enSans" : "font-jaSans"}>
-      <div className="flex h-[120px] flex-col items-center justify-center space-y-2 bg-sky-200 md:h-[100px]  md:flex-row md:space-y-0 md:space-x-20">
+      <div className="flex flex-col items-center justify-center space-y-2 bg-sky-200 py-2 md:h-[100px] md:flex-row  md:space-y-0 md:space-x-20 md:py-0">
         {/* <p className="text-neutral-800">Have your teacher&apos;s code?</p> */}
         <p className="text-neutral-800">{t("landing-hero-code-1")}</p>
-        <div>
+        <div className="flex flex-col items-center space-y-2 sm:flex-row sm:space-y-0">
           <input
             type="text"
             className="bg-white px-3 py-3 outline-none"
@@ -45,13 +45,15 @@ const Hero = () => {
             value={code}
             onChange={(e) => setCode(e.target.value)}
           />
-          <button
-            onClick={handleCodeCheck}
-            type="button"
-            className="bg-sky-600 px-5 py-3 text-white"
-          >
-            {t("landing-hero-code-3")}
-          </button>
+          <div>
+            <button
+              onClick={handleCodeCheck}
+              type="button"
+              className="bg-sky-600 px-5 py-3 text-white"
+            >
+              {t("landing-hero-code-3")}
+            </button>
+          </div>
         </div>
       </div>
       {/* <div
@@ -66,14 +68,18 @@ const Hero = () => {
             <div className="">
               <h2
                 className={`${
-                  i18n.language === "en" ? "text-4xl" : "text-3xl"
+                  i18n.language === "en"
+                    ? "text-3xl md:text-4xl"
+                    : "text-2xl md:text-3xl"
                 } font-bold`}
               >
                 {t("landing-hero-header-1")}
               </h2>
               <h2
                 className={`${
-                  i18n.language === "en" ? "text-4xl" : "text-3xl"
+                  i18n.language === "en"
+                    ? "text-3xl md:text-4xl"
+                    : "text-2xl md:text-3xl"
                 } font-bold`}
               >
                 {t("landing-hero-header-2")}

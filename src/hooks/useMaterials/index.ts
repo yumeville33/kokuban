@@ -5,13 +5,16 @@ import { storage } from "@/utils/firebase";
 
 const MAX_MATERIALS = 9;
 
-const useMaterials = () => {
+const useMaterials = (type: string) => {
   const [materials, setMaterials] = useState<Array<string>>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const getMaterials = async () => {
-      const listRef = ref(storage, "educ-content");
+      setLoading(true);
+      // const listRef = ref(storage, "educ-content");
+      const listRef = ref(storage, `materials/${type}`);
       const res = await listAll(listRef);
       const _materials = await Promise.all(
         res.items.map(async (itemRef) => {
@@ -20,10 +23,11 @@ const useMaterials = () => {
         })
       );
       setMaterials(_materials);
+      setLoading(false);
     };
 
     getMaterials();
-  }, []);
+  }, [type]);
 
   const indexOfLastMaterial = currentPage * MAX_MATERIALS;
   const indexOfFirstMaterial = indexOfLastMaterial - MAX_MATERIALS;
@@ -51,6 +55,7 @@ const useMaterials = () => {
     currentMaterials,
     handlePrev,
     handleNext,
+    loading,
   };
 };
 
