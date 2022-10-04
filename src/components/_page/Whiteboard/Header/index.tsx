@@ -75,7 +75,7 @@ const Header = ({
   return (
     <div
       className={`z-[999] flex h-[70px] w-full items-center justify-between bg-white px-5 shadow-md shadow-neutral-200 drop-shadow-sm ${
-        i18n.language === "en" ? "enSans" : "jaSans"
+        i18n.language === "en" ? "font-enSans" : "font-jaSans"
       }`}
     >
       <Modal

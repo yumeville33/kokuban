@@ -190,3 +190,76 @@ export const SHAPES = [
 ];
 
 export const SIZES = [3, 6, 10, 15];
+
+export const materialCategories = [
+  {
+    key: "art",
+    enName: "Art",
+    jaName: "美術",
+  },
+  {
+    key: "calligraphy",
+    enName: "Calligraphy",
+    jaName: "書道",
+  },
+  {
+    key: "english-language",
+    enName: "English Language",
+    jaName: "英語",
+  },
+  {
+    key: "japanese-language",
+    enName: "Japanese Language",
+    jaName: "国語",
+  },
+  {
+    key: "math",
+    enName: "Math",
+    jaName: "算数",
+  },
+  {
+    key: "music",
+    enName: "Music",
+    jaName: "音楽",
+  },
+  {
+    key: "physical-education",
+    enName: "Physical Education",
+    jaName: "体育",
+  },
+  {
+    key: "school-lunch",
+    enName: "School Lunch",
+    jaName: "お弁当",
+  },
+  {
+    key: "science",
+    enName: "Science",
+    jaName: "科学",
+  },
+  {
+    key: "social-studies",
+    enName: "Social Studies",
+    jaName: "社会",
+  },
+  {
+    key: "sports-day",
+    enName: "Sports Day",
+    jaName: "運動会",
+  },
+  {
+    key: "stamp",
+    enName: "Stamp",
+    jaName: "スタンプ",
+  },
+  {
+    key: "stationery",
+    enName: "Stationery",
+    jaName: "文房具",
+  },
+  {
+    key: "etc",
+    enName: "Etc",
+    jaName: "その他",
+  },
+];
