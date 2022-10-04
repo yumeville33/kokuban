@@ -35,9 +35,9 @@ const Navbar = () => {
         </Link>
 
         <div className="hidden flex-row items-center space-x-10 lg:flex">
-          {NAV_LINKS.map((name, i) => (
-            <Link key={name} href={name.toLowerCase()} passHref>
-              <a className="" href={name.toLowerCase()}>
+          {NAV_LINKS.map((link, i) => (
+            <Link key={link.name} href={link.href} passHref>
+              <a className="" href={link.href}>
                 {t(`nav-link-${i + 1}`)}
               </a>
             </Link>

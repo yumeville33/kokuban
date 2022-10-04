@@ -4,7 +4,7 @@ import { initReactI18next } from "react-i18next";
 import HttpApi from "i18next-http-backend";
 import LanguageDetector from "i18next-browser-languagedetector";
 
-const fallbackLng = ["en"];
+const fallbackLng = ["ja"];
 const availableLanguages = ["en", "ja"];
 
 i18n

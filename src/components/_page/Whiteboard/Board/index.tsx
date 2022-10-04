@@ -223,7 +223,7 @@ const Board = ({
     <div
       ref={boardRef}
       // className="flex h-[calc(100%-150px)] items-center justify-center bg-white"
-      className={`flex h-full items-center justify-center bg-white ${
+      className={`flex h-full w-full items-center justify-center bg-white ${
         i18n.language === "en" ? "enSans" : "jaSans"
       }`}
     >

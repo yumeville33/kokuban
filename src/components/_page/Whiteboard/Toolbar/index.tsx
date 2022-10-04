@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable no-lonely-if */
 import React, { useRef, useState, useEffect } from "react";
 import { GoPrimitiveDot } from "react-icons/go";
@@ -50,7 +51,7 @@ const Toolbar = ({
   setTemplateData,
 }: ToolbarProps) => {
   const { userData } = useAuth();
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
 
   const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
   const [textColorPickerOpen, setTextColorPickerOpen] = useState(false);
@@ -361,7 +362,7 @@ const Toolbar = ({
 
   return (
     <div
-      className={`relative z-[50] flex h-[calc(100%)] w-[70px] flex-col items-center justify-center space-y-1 border-r-2 bg-white ${
+      className={`relative z-[50] flex h-full w-[70px] flex-col items-center justify-center space-y-1 border-r-2 bg-white ${
         i18n.language === "en" ? "font-enSans" : "font-jaSans"
       }`}
     >
@@ -444,6 +445,8 @@ const Toolbar = ({
                           objectFit="contain"
                           src={material}
                         /> */}
+                          {/* // eslint-disable-next-line @next/next/no-img-element */}
+
                           <img
                             src={material}
                             alt=""

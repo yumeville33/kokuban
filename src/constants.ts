@@ -28,14 +28,26 @@ import { HiTemplate } from "react-icons/hi";
 import { ITool } from "./components/types";
 import { InputType } from "./components/_page/Auth/Form";
 
-export const APP_NAME = "Educapp" as const;
+export const APP_NAME = "Kokuban" as const;
 
 export const NAV_LINKS = [
-  "Features",
-  // "Pricing",
-  // "Resources",
-  "About",
-  "Contact",
+  {
+    name: "Features",
+    href: "#features",
+  },
+  {
+    name: "About",
+    href: "https://yumeville.com",
+  },
+  {
+    name: "Contact",
+    href: "#contact",
+  },
+  // "Features",
+  // // "Pricing",
+  // // "Resources",
+  // "About",
+  // "Contact",
 ];
 
 export const FOOTER_LINKS = [
