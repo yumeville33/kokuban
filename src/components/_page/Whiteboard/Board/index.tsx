@@ -80,6 +80,7 @@ const Board = ({
   const [studentName, setStudentName] = useState("");
   const [studentSection, setStudentSection] = useState("");
   const [schoolName, setSchoolName] = useState("");
+  const [schoolYear, setSchoolYear] = useState("");
 
   const [boardSize, setBoardSize] = useState({ height: 0, width: 0 });
 
@@ -183,8 +184,10 @@ const Board = ({
       studentName,
       studentSection,
       schoolName,
+      schoolYear,
       boardOwner: otherData?.user,
       boardRef: router.query.id,
+      teacherBoardTitle: whiteboardTitle,
     };
 
     const res = await fetchAPI(
@@ -208,12 +211,17 @@ const Board = ({
       setValue: setStudentName,
     },
     {
-      label: t("whiteboard-save-student-field-1"),
+      label: t("whiteboard-save-student-field-4"),
+      value: schoolYear,
+      setValue: setSchoolYear,
+    },
+    {
+      label: t("whiteboard-save-student-field-2"),
       value: studentSection,
       setValue: setStudentSection,
     },
     {
-      label: t("whiteboard-save-student-field-1"),
+      label: t("whiteboard-save-student-field-3"),
       value: schoolName,
       setValue: setSchoolName,
     },

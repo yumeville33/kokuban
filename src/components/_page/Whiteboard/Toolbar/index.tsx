@@ -32,6 +32,8 @@ interface ToolbarProps {
   >;
   templateData: Array<IData[]>;
   setTemplateData: React.Dispatch<React.SetStateAction<Array<IData[]>>>;
+  selectedElement: number | null;
+  studentSelectedElement: number | null;
 }
 
 const Toolbar = ({
@@ -49,9 +51,11 @@ const Toolbar = ({
   setStudentSelectedElement,
   templateData,
   setTemplateData,
+  selectedElement,
+  studentSelectedElement,
 }: ToolbarProps) => {
   const { userData } = useAuth();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
   const [textColorPickerOpen, setTextColorPickerOpen] = useState(false);
@@ -59,7 +63,7 @@ const Toolbar = ({
   const [previousColor, setPreviousColor] = useState<string | null>(null);
   const [isToolOpen, setIsToolOpen] = useState(false);
   const [templates, setTemplates] = useState<Array<any>>([]);
-  const [selectedMaterial, setSelectedMaterial] = useState<string>("art");
+  const [selectedMaterial, setSelectedMaterial] = useState("art");
 
   // const { materials, currentMaterials, handlePrev, handleNext, loading } =
   //   useMaterials(selectedMaterial.toLowerCase().replace(/ /g, "-"));
@@ -73,8 +77,6 @@ const Toolbar = ({
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [text, setText] = useState("");
   const [textSize, setTextSize] = useState(20);
-
-  console.log("selectedMaterial", selectedMaterial);
 
   const handleMaterialClick = async (material: string) => {
     const file = await blobUrlToFile(material);
@@ -130,6 +132,18 @@ const Toolbar = ({
       getOtherUserContents();
     }
   }, [userData]);
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleDeleteWithBackspace, true);
+  }, []);
+
+  const handleDeleteWithBackspace = (e: KeyboardEvent) => {
+    if (e.key === "Backspace") {
+      if (selectedElement !== null || studentSelectedElement !== null) {
+        console.log("Backspace pressed");
+      }
+    }
+  };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0];
@@ -406,6 +420,7 @@ const Toolbar = ({
                         console.log("e.target.value", e.target.value);
                         setSelectedMaterial(e.target.value);
                       }}
+                      value={selectedMaterial}
                     >
                       {materialCategories.map((category) => {
                         return (
@@ -420,16 +435,18 @@ const Toolbar = ({
                   </div>
                   {materials && materials.length === 0 && (
                     <div className="text-center text-sm text-neutral-400">
-                      No material available
+                      {t("toolbar-no-material")}
                     </div>
                   )}
                   {loading && (
                     <div className="flex h-[240px] items-center justify-center">
-                      <p>Loading materials...</p>
+                      <p>{t("toolbar-loading-material")}...</p>
                     </div>
                   )}
                   <div className="grid w-[410px] grid-cols-3 gap-[5px]">
                     {!loading &&
+                      currentMaterials &&
+                      currentMaterials.length > 0 &&
                       currentMaterials.map((material) => (
                         <button
                           key={material}
@@ -465,7 +482,7 @@ const Toolbar = ({
                           handlePrev();
                         }}
                       >
-                        previous
+                        {t("material-previous")}
                       </button>
                       <button
                         type="button"
@@ -474,7 +491,7 @@ const Toolbar = ({
                           handleNext();
                         }}
                       >
-                        next
+                        {t("material-next")}
                       </button>
                     </div>
                   </div>
@@ -482,32 +499,39 @@ const Toolbar = ({
               )}
               {activeTool === "template" && name === "template" && isToolOpen && (
                 <div className="absolute left-[70px]  rounded-lg border border-neutral-400 bg-white p-2">
-                  <div className="mb-2 text-center text-sm">Templates</div>
+                  <div className="mb-2 text-center text-sm">
+                    {t("toolbar-text-templates")}
+                  </div>
                   <div className="space-y-2">
                     {templates.length === 0 && (
                       <div className="text-center text-sm text-neutral-400">
-                        No template available
+                        {t("toolbar-text-no-templates")}
                       </div>
                     )}
                     <div></div>
-                    {templates.map((template) => (
-                      <button
-                        key={template._id}
-                        className="relative h-[80px] w-[130px] border border-neutral-300"
-                        type="button"
-                        onClick={() => {
-                          // set
-                          setTemplateData([...templateData, template.content]);
-                        }}
-                      >
-                        <NextImage
-                          layout="fill"
-                          objectPosition="center"
-                          objectFit="contain"
-                          src={template.thumbnail.url}
-                        />
-                      </button>
-                    ))}
+                    {templates &&
+                      templates.length > 0 &&
+                      templates.map((template) => (
+                        <button
+                          key={template._id}
+                          className="relative h-[80px] w-[130px] border border-neutral-300"
+                          type="button"
+                          onClick={() => {
+                            // set
+                            setTemplateData([
+                              ...templateData,
+                              template.content,
+                            ]);
+                          }}
+                        >
+                          <NextImage
+                            layout="fill"
+                            objectPosition="center"
+                            objectFit="contain"
+                            src={template.thumbnail.url}
+                          />
+                        </button>
+                      ))}
                     <div className="flex w-full justify-evenly ">
                       <button
                         type="button"
@@ -567,7 +591,7 @@ const Toolbar = ({
                     type="button"
                     onClick={handleTextTool}
                   >
-                    Apply
+                    {t("toolbar-text-apply")}
                   </button>
                   {textColorPickerOpen && (
                     <div className="absolute -right-[232px] -top-[8px]">
@@ -596,7 +620,9 @@ const Toolbar = ({
                           setIsColorPickerOpen((prev) => !prev);
                         }}
                       >
-                        <div className="text-xs">Color</div>
+                        <div className="mx-auto text-center text-xs">
+                          {t("toolbar-text-color")}
+                        </div>
                         <div
                           style={{ backgroundColor: color }}
                           className="h-[30px] w-[30px]"

@@ -179,7 +179,7 @@ const Table = () => {
                               <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p className="whitespace-no-wrap text-gray-900">
                                   {grade.grade === 0
-                                    ? "Not graded yet"
+                                    ? t("answer-no-grade")
                                     : grade.grade}
                                 </p>
                               </td>

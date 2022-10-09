@@ -135,6 +135,8 @@ export const Whiteboard = ({ data, otherData }: WhiteboardProps) => {
           setStudentSelectedElement={setStudentSelectedElement}
           templateData={templateData}
           setTemplateData={setTemplateData}
+          selectedElement={selectedElement}
+          studentSelectedElement={studentSelectedElement}
         />
         <DynamicBoard
           handleMouseDown={handleMouseDown}

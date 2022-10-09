@@ -47,7 +47,7 @@ const Header = ({
       await navigator.clipboard.writeText(
         `${process.env.NEXT_PUBLIC_DOMAIN}/code/${otherData?.code}`
       );
-      toast.success("Link copied to clipboard");
+      toast.success(t("toast-text-link"));
     } catch (error) {
       toast.error("Unable to copy link");
     }
@@ -64,7 +64,7 @@ const Header = ({
       );
 
       if (res.status === "success") {
-        toast.success("Grade updated");
+        toast.success(t("toast-text-grade-update"));
         setIsModalOpen(false);
       }
     } catch (error) {
@@ -134,7 +134,8 @@ const Header = ({
         />
         {otherData && !router.asPath.includes("answer") && (
           <p className="pl-6">
-            Code: <span className="text-sky-600">{otherData.code}</span>
+            {t("header-text-code")}:{" "}
+            <span className="text-sky-600">{otherData.code}</span>
           </p>
         )}
       </div>
@@ -145,7 +146,7 @@ const Header = ({
           {router.asPath.includes("answer") && (
             <button
               type="button"
-              className="rounded-md bg-sky-400 px-3 py-1 text-white"
+              className="whitespace-nowrap rounded-md bg-sky-400 px-3 py-1 text-white"
               onClick={() => setIsModalOpen(() => true)}
             >
               {t("whiteboard-header-put-grade")}
@@ -154,7 +155,7 @@ const Header = ({
           {userData && router?.query?.id && (
             <button
               type="button"
-              className="rounded-md bg-sky-400 px-3 py-1 text-white"
+              className="whitespace-nowrap rounded-md bg-sky-400 px-3 py-1 text-white"
               onClick={onShareClick}
             >
               {t("whiteboard-header-share")}
