@@ -87,7 +87,7 @@ const Card: React.FC<CardProps> = ({
                 <div className="rounded-md border border-neutral-300 bg-red-500 shadow-lg hover:bg-red-700">
                   <button
                     type="button"
-                    className="block px-4 py-2 text-sm text-white "
+                    className="block whitespace-nowrap px-4 py-2 text-sm text-white"
                     onClick={onDelete}
                   >
                     {t("card-delete")}
