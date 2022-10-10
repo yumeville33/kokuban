@@ -7,6 +7,7 @@ import { APP_NAME, NAV_LINKS } from "@/constants";
 import { useAuth, USER_DATA_STORAGE_KEY } from "@/contexts/AuthContext";
 import { MainButton } from "../Buttons";
 import LanguageSelector from "../LanguageSelector";
+import Hamburger from "../Hamburger";
 
 const Navbar = () => {
   const router = useRouter();
@@ -34,6 +35,7 @@ const Navbar = () => {
           </h1>
         </Link>
 
+        <Hamburger links={NAV_LINKS} handleLogout={handleLogout} />
         <div className="hidden flex-row items-center space-x-10 lg:flex">
           {NAV_LINKS.map((link, i) => (
             <Link key={link.name} href={link.href} passHref>
