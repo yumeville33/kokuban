@@ -35,7 +35,7 @@ const LanguageSelector = () => {
         style={{
           maxHeight: selectorOpen ? "200px" : "0px",
         }}
-        className={`absolute right-0 z-[999] mt-[10px] w-[200px] rounded-lg bg-neutral-200 transition-all duration-200 ease-in-out ${
+        className={`absolute right-0 z-[999] mt-[10px] rounded-lg bg-neutral-200 transition-all duration-200 ease-in-out lg:w-[200px] ${
           selectorOpen ? "" : ""
         }`}
       >
@@ -43,14 +43,14 @@ const LanguageSelector = () => {
           <>
             <button
               type="button"
-              className="flex w-full items-center justify-between px-3 py-3"
+              className="flex items-center justify-between px-3 py-3 lg:w-full"
               onClick={() => setLocale("en")}
             >
               <div className="flex items-center">
-                <div className="relative h-[15px] w-[30px]">
+                <div className="relative h-[25px] w-[40px] lg:h-[15px] lg:w-[30px]">
                   <Image src={usaIcon} layout="fill" />
                 </div>
-                <p className="text-sm">English</p>
+                <p className="hidden text-sm lg:block">English</p>
               </div>
               {i18n.language === "en" && (
                 <AiOutlineCheck className="h-[10px] w-[10px]" />
@@ -58,14 +58,14 @@ const LanguageSelector = () => {
             </button>
             <button
               type="button"
-              className="flex w-full items-center justify-between px-3 py-3"
+              className="flex items-center justify-between px-3 py-3 lg:w-full"
               onClick={() => setLocale("ja")}
             >
               <div className="flex items-center">
-                <div className="relative h-[15px] w-[30px]">
+                <div className="relative h-[25px] w-[40px] lg:h-[15px] lg:w-[30px]">
                   <Image src={japanIcon} layout="fill" />
                 </div>
-                <p className="text-sm">Japanese</p>
+                <p className="hidden text-sm lg:block">Japanese</p>
               </div>
               {i18n.language === "ja" && (
                 <AiOutlineCheck className="h-[10px] w-[10px]" />

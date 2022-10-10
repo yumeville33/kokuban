@@ -6,6 +6,7 @@ import { AiOutlineClose } from "react-icons/ai";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/router";
+import LanguageSelector from "../LanguageSelector";
 
 Modal.setAppElement("#__next");
 
@@ -97,6 +98,7 @@ const Hamburger = ({ links, handleLogout }: HamburgerProps) => {
                 {userData ? t(`nav-link-6`) : t("nav-link-4")}
               </p>
             </button>
+            <LanguageSelector />
           </div>
           <button
             type="button"
