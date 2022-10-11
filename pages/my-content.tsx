@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useRouter } from "next/router";
@@ -32,13 +32,13 @@ const MyContent = () => {
     };
   }, [userData, dataFetched]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const getContents = async () => {
       try {
         const res = await fetchAPI(
           `${process.env.NEXT_PUBLIC_API_ENDPOINT as string}contents/${
             userData?.data.user._id
-          }/getUserContent`,
+          }/getUserContent/no/`,
           "GET"
         );
 

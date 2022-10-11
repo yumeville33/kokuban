@@ -68,6 +68,47 @@ const Toolbar = ({
   // const { materials, currentMaterials, handlePrev, handleNext, loading } =
   //   useMaterials(selectedMaterial.toLowerCase().replace(/ /g, "-"));
 
+  const handleDeleteWithBackspace = (e: KeyboardEvent) => {
+    if (e.key === "Backspace") {
+      if (selectedElement !== null || studentSelectedElement !== null) {
+        if (selectedElement !== null) {
+          const filteredData = data.filter(
+            (element) => element.id !== selectedElement
+          );
+
+          const selectedData = data.filter(
+            (element) => element.id === selectedElement
+          );
+
+          setData(filteredData);
+          setDeletedData([...deletedData, ...selectedData]);
+          setSelectedElement(null);
+        }
+
+        if (studentSelectedElement !== null) {
+          const studentFilteredData = studentData.filter(
+            (element) => element.id !== studentSelectedElement
+          );
+
+          const studentSelectedData = studentData.filter(
+            (element) => element.id === studentSelectedElement
+          );
+
+          setStudentData(studentFilteredData);
+          setStudentDeletedData([
+            ...studentDeletedData,
+            ...studentSelectedData,
+          ]);
+          setStudentSelectedElement(null);
+        }
+      }
+    }
+  };
+
+  React.useEffect(() => {
+    document.addEventListener("keydown", handleDeleteWithBackspace, true);
+  }, [selectedElement, studentSelectedElement]);
+
   const { materials, currentMaterials, handlePrev, handleNext, loading } =
     useMaterials(selectedMaterial);
 
@@ -132,18 +173,6 @@ const Toolbar = ({
       getOtherUserContents();
     }
   }, [userData]);
-
-  useEffect(() => {
-    document.addEventListener("keydown", handleDeleteWithBackspace, true);
-  }, []);
-
-  const handleDeleteWithBackspace = (e: KeyboardEvent) => {
-    if (e.key === "Backspace") {
-      if (selectedElement !== null || studentSelectedElement !== null) {
-        console.log("Backspace pressed");
-      }
-    }
-  };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0];
@@ -417,7 +446,6 @@ const Toolbar = ({
                     <select
                       className="rounded-lg border border-neutral-400 px-2 py-1 outline-none"
                       onChange={(e) => {
-                        console.log("e.target.value", e.target.value);
                         setSelectedMaterial(e.target.value);
                       }}
                       value={selectedMaterial}

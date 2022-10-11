@@ -59,8 +59,8 @@ const BoardData = ({
   useEffect(() => {
     if (
       selectedElement &&
-      transformRefs[selectedElement].current &&
-      dataRefs[selectedElement].current
+      transformRefs[selectedElement]?.current &&
+      dataRefs[selectedElement]?.current
     ) {
       transformRefs[selectedElement]?.current?.nodes([
         dataRefs[selectedElement].current,
@@ -306,7 +306,7 @@ const BoardData = ({
             }
 
             if (d.toolType === "image") {
-              const isDesiredHeight = d.originalSize?.height! <= 150;
+              // const isDesiredHeight = d.originalSize?.height! <= 150;
               const size = d.size as SizeType;
 
               return (
@@ -318,16 +318,23 @@ const BoardData = ({
                     imageProps={{
                       x: d.position!.x,
                       y: d.position!.y,
-                      height: isDesiredHeight
-                        ? d.originalSize?.height
-                        : size.height,
-                      width: isDesiredHeight
-                        ? d.originalSize?.width
-                        : size.width,
+                      // height: isDesiredHeight
+                      //   ? d.originalSize?.height
+                      //   : size.height,
+                      height: size.height,
+                      // width: isDesiredHeight
+                      //   ? d.originalSize?.width
+                      //   : size.width,
+                      width: size.width,
                       draggable: activeTool === "drag" && isDraggable,
                       onDragEnd: (e: KonvaEventObject<DragEvent>) =>
                         handleDragging(e, d.id),
                       onClick: () => {
+                        if (activeTool === "drag") {
+                          setSelectedElement(d.id as number);
+                        }
+                      },
+                      onTouchStart: () => {
                         if (activeTool === "drag") {
                           setSelectedElement(d.id as number);
                         }

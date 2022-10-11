@@ -35,7 +35,7 @@ const Table = () => {
         const res = await fetchAPI(
           `${process.env.NEXT_PUBLIC_API_ENDPOINT as string}contents/${
             userData?.data.user._id
-          }/getUserContent`,
+          }/getUserContent/yes/`,
           "GET"
         );
         // const res = await fetchAPI(
