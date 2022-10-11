@@ -53,7 +53,8 @@ export type ShapeType = "circle" | "square" | "triangle" | "rectangle";
 // };
 
 export interface IData {
-  id: number | string;
+  // id: number | string;
+  id: number;
   toolType: ActiveToolType;
   color?: string;
   points?: Array<number>;
