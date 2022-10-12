@@ -1,11 +1,15 @@
 import React from "react";
+import { useRouter } from "next/router";
 import { BiBookContent } from "react-icons/bi";
 import { useTranslation } from "react-i18next";
 
 import { MainButton } from "@/components/Buttons";
+import { useAuth } from "@/contexts/AuthContext";
 
 const GetStarted = () => {
   const { t, i18n } = useTranslation();
+  const router = useRouter();
+  const { userData } = useAuth();
 
   return (
     <section
@@ -22,6 +26,7 @@ const GetStarted = () => {
           text={t("landing-banner-button")}
           className="bg-sky-100 "
           textStyle="text-neutral-600"
+          onClick={() => router.push(userData ? "/my-content" : "/auth")}
         />
       </div>
     </section>

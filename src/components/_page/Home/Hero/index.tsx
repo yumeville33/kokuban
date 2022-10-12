@@ -1,19 +1,23 @@
 import React from "react";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
+import Image from "next/image";
+import { useTranslation } from "react-i18next";
 
 import { MainButton } from "@/components/Buttons";
 import { APP_NAME } from "@/constants";
 import fetchAPI from "@/utils/fetch";
-import { useTranslation } from "react-i18next";
+import { LoaderModal } from "@/components";
 
 const Hero = () => {
   const router = useRouter();
   const { t, i18n } = useTranslation();
 
   const [code, setCode] = React.useState<string>("");
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const handleCodeCheck = async () => {
+    setIsLoading(true);
     try {
       const res = await fetchAPI(
         `${
@@ -30,6 +34,7 @@ const Hero = () => {
     } catch (error) {
       toast.error("No content found with this code!");
     }
+    setIsLoading(false);
   };
 
   return (
@@ -53,6 +58,7 @@ const Hero = () => {
             >
               {t("landing-hero-code-3")}
             </button>
+            <LoaderModal isModalOpen={isLoading} />
           </div>
         </div>
       </div>
@@ -96,8 +102,8 @@ const Hero = () => {
             }}
           />
         </div>
-        <div className="flex h-[400px] w-[400px] items-center justify-center bg-sky-200 text-neutral-600">
-          <p>Image here</p>
+        <div className="relative flex h-[400px] w-[400px] items-center justify-center ">
+          <Image src="/01.png" layout="fill" />
         </div>
         <MainButton
           type="button"

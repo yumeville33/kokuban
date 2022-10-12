@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import fetchAPI from "@/utils/fetch";
 import { Card } from "@/components/_page/Content";
-import { Layout } from "@/components";
+import { Layout, LoaderModal } from "@/components";
 import Link from "next/link";
 
 const MyContent = () => {
@@ -19,6 +19,7 @@ const MyContent = () => {
   const [data, setData] = useState<any>([]);
   const [dataFetched, setDataFetched] = useState<boolean>(false);
   const [selectedContent, setSelectedContent] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -34,6 +35,7 @@ const MyContent = () => {
 
   useEffect(() => {
     const getContents = async () => {
+      setIsLoading(true);
       try {
         const res = await fetchAPI(
           `${process.env.NEXT_PUBLIC_API_ENDPOINT as string}contents/${
@@ -48,6 +50,8 @@ const MyContent = () => {
       } catch (error) {
         console.log(error);
       }
+
+      setIsLoading(false);
     };
 
     if (userData) {
@@ -58,6 +62,7 @@ const MyContent = () => {
   }, [userData]);
 
   const handleDeleteContent = async () => {
+    setIsLoading(true);
     try {
       const res = await fetchAPI(
         `${
@@ -77,6 +82,8 @@ const MyContent = () => {
       toast.error(t("content-msg-error-1"));
       // setSelectedContent(null);
     }
+
+    setIsLoading(false);
   };
 
   return (
@@ -88,6 +95,7 @@ const MyContent = () => {
               i18n.language === "en" ? "font-enSans" : "font-jaSans"
             }`}
           >
+            <LoaderModal isModalOpen={isLoading} />
             <div className="flex items-center space-x-5">
               <h2 className="mb-5 text-2xl font-bold text-gray-800">
                 {t("content-header")}
