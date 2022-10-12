@@ -14,6 +14,7 @@ import { MainButton } from "@/components/Buttons";
 import imageUpload from "@/utils/imageUpload";
 import { OtherDataType } from "pages/whiteboard/[id]";
 import { useTranslation } from "react-i18next";
+import LoaderModal from "@/components/LoaderModal";
 import BoardData from "../BoardData";
 
 Modal.setAppElement("#__next");
@@ -82,6 +83,8 @@ const Board = ({
   const [schoolName, setSchoolName] = useState("");
   const [schoolYear, setSchoolYear] = useState("");
 
+  const [isSaving, setIsSaving] = useState(false);
+
   const [boardSize, setBoardSize] = useState({ height: 0, width: 0 });
 
   const stageRef = React.useRef<Konva.Stage>(null);
@@ -132,6 +135,8 @@ const Board = ({
     // const imageType = uri?.split(";")[0].split("/")[1];
     if (!uri) return;
 
+    setIsSaving(true);
+
     const imageUrl = await imageUpload(uri);
 
     const isPATCH = router.query.id;
@@ -162,6 +167,8 @@ const Board = ({
     if (!userData) {
       setIsModalOpen(() => true);
     }
+
+    setIsSaving(false);
   };
 
   const onStudentSubmit = async () => {
@@ -174,6 +181,8 @@ const Board = ({
     // const imageType = uri?.split(";")[0].split("/")[1];
 
     if (!uri) return;
+
+    setIsSaving(true);
 
     const imageUrl = await imageUpload(uri);
 
@@ -202,6 +211,8 @@ const Board = ({
       toast.success(t("whiteboard-save-student-1"));
       setButtonDisabled(() => true);
     }
+
+    setIsSaving(false);
   };
 
   const modalContent = [
@@ -264,6 +275,7 @@ const Board = ({
           />
         </div>
       </Modal>
+      <LoaderModal isModalOpen={isSaving} />
       {/* 150px */}
       {!router.asPath.includes("answer") && (
         <button

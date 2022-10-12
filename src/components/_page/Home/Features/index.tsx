@@ -1,8 +1,8 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { MainButton } from "@/components/Buttons";
 import { keyGenerator } from "@/utils/functions";
+import Image from "next/image";
 
 const Features = () => {
   const { t, i18n } = useTranslation();
@@ -25,8 +25,8 @@ const Features = () => {
       <div className="mx-auto mb-16 flex max-w-[700px] flex-col items-center space-y-12 md:flex-row md:items-start md:justify-between md:space-y-0 ">
         {features.map((_, index) => (
           <div key={keyGenerator(index)}>
-            <div className="mb-6 flex h-[250px] w-[250px] items-center justify-center bg-sky-200 text-neutral-700 md:mb-8 lg:h-[300px] lg:w-[300px]">
-              Image here
+            <div className="relative mb-6 flex h-[250px] w-[250px] items-center justify-center md:mb-8 lg:h-[300px] lg:w-[300px]">
+              <Image src={`/0${index + 2}.png`} layout="fill" />
             </div>
             <div>
               <h3 className="mb-2 text-xl font-semibold">
@@ -38,9 +38,6 @@ const Features = () => {
             </div>
           </div>
         ))}
-      </div>
-      <div className="flex justify-center">
-        <MainButton type="button" text={t("landing-feature-button")} />
       </div>
     </section>
   );
