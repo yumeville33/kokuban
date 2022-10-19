@@ -40,8 +40,6 @@ const read = async () => {
     });
   });
 
-  console.log("result", result);
-
   return result;
 };
 

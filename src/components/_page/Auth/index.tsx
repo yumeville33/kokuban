@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import fetchAPI from "@/utils/fetch";
 import { IUser, IUserData } from "@/models/user";
 import { USER_DATA_STORAGE_KEY } from "@/contexts/AuthContext";
+import LoaderModal from "@/components/LoaderModal";
 import Form from "./Form";
 
 type AuthType = "sign_in" | "sign_up";
@@ -14,6 +15,7 @@ const authEnum = {
 export const Auth = () => {
   const [authState, setAuthState] = useState<AuthType>("sign_up");
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Sign in states
   const [signInEmail, setSignInEmail] = useState("");
@@ -72,33 +74,42 @@ export const Auth = () => {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Sign in
-    if (authState === authEnum.sign_in) {
-      const data: IUserData = await fetchAPI(
-        `${process.env.NEXT_PUBLIC_API_ENDPOINT as string}users/login/`,
-        "POST",
-        { email: signInEmail, password: signInPassword }
-      );
+    try {
+      setIsLoading(true);
+      // Sign in
+      if (authState === authEnum.sign_in) {
+        const data: IUserData = await fetchAPI(
+          `${process.env.NEXT_PUBLIC_API_ENDPOINT as string}users/login/`,
+          "POST",
+          { email: signInEmail, password: signInPassword }
+        );
 
-      checkInfo(data);
-    } else {
-      // Sign up
-      const data: IUserData = await fetchAPI(
-        `${process.env.NEXT_PUBLIC_API_ENDPOINT as string}users/signup/`,
-        "POST",
-        {
-          email: signUpEmail,
-          password: signUpPassword,
-          passwordConfirm: signUpConfirmPassword,
-        }
-      );
+        checkInfo(data);
+      } else {
+        // Sign up
+        const data: IUserData = await fetchAPI(
+          `${process.env.NEXT_PUBLIC_API_ENDPOINT as string}users/signup/`,
+          "POST",
+          {
+            email: signUpEmail,
+            password: signUpPassword,
+            passwordConfirm: signUpConfirmPassword,
+          }
+        );
 
-      checkInfo(data);
+        checkInfo(data);
+      }
+
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="flex h-screen items-center justify-center py-[100px]">
+      <LoaderModal isModalOpen={isLoading} />
       <Form
         authState={authState}
         onAuthStateChange={() => {
