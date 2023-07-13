@@ -6,7 +6,7 @@ dotenv.config();
 
 //# Initialize the sheet
 const doc = new GoogleSpreadsheet(
-  "1ruB6ZFNyvG1b_auGfY5418XRwQKZXUdO_IvCnXXqOuo"
+  "1EVjoI9Y3mWkN0Wiz_3-E0hCXOvBbvlf_cKLqiR8h-Gk"
 ); //# spreadsheet ID
 
 //# Initialize Auth
